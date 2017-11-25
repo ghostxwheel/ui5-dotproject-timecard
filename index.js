@@ -17,9 +17,19 @@ const ui5Resources = path.join(__dirname, 'ui');
 const year = 60 * 60 * 24 * 365 * 1000;
 const port = process.env.PORT || '8081';
 
+app.configure('production', function () {
+  app.use(function (req, res, next) {
+    if (req.header['x-forwarded-proto'] !== 'https') {
+      res.redirect(`https://${req.header('host')}${req.url}`)
+    } else {
+      next();
+    }
+  });
+});
+
 app.use(compression());
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true}));
+app.use(bodyParser.urlencoded({ extended: true }));
 
 //set default mime type to xml for ".library" files
 express.static.mime.default_type = "text/xml";
