@@ -15,7 +15,7 @@ const app = express();
 
 const ui5Resources = path.join(__dirname, 'ui');
 const year = 60 * 60 * 24 * 365 * 1000;
-const port = '8081';
+const port = process.env.PORT || '8081';
 
 app.use(compression());
 app.use(bodyParser.json());
