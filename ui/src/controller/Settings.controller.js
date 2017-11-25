@@ -27,12 +27,13 @@ sap.ui.define([
     onSave: function (oEvent) {
       var oStorage = jQuery.sap.storage(jQuery.sap.storage.Type.local);
       var oModel = this.getOwnerComponent().getModel("settings");
+      var oResourceBundle = this.getOwnerComponent().getModel("i18n").getResourceBundle();
 
       oStorage.put("settings", oModel.getProperty("/"));
 
       this.onBack(oEvent);
 
-      MessageToast.show("Settings saved to device storage", {
+      MessageToast.show(oResourceBundle.getText("settingsSavedMessage"), {
         duration: 2000
       });
     },
