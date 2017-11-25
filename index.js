@@ -17,7 +17,7 @@ const ui5Resources = path.join(__dirname, 'ui');
 const year = 60 * 60 * 24 * 365 * 1000;
 const port = process.env.PORT || '8081';
 
-app.configure('production', function () {
+if (process.env.NODE_ENV === "production") {
   app.use(function (req, res, next) {
     if (req.header['x-forwarded-proto'] !== 'https') {
       res.redirect(`https://${req.header('host')}${req.url}`)
@@ -25,7 +25,7 @@ app.configure('production', function () {
       next();
     }
   });
-});
+}
 
 app.use(compression());
 app.use(bodyParser.json());
