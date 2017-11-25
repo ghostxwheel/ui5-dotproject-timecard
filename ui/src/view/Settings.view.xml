@@ -1,0 +1,78 @@
+<mvc:View 
+  xmlns:html="http://www.w3.org/1999/xhtml" 
+  xmlns:mvc="sap.ui.core.mvc" 
+  xmlns="sap.m" 
+  xmlns:core="sap.ui.core" 
+  xmlns:form="sap.ui.layout.form" controllerName="com.sap.dotproject.timecard.controller.Settings" displayBlock="true">
+  <Page id="idPageSettings" floatingFooter="true">
+    <headerContent>
+      <Bar>
+        <contentLeft>
+          <Button id="idButtonBack" icon="sap-icon://nav-back" tooltip="{i18n>/settings}" press="onBack"/>
+        </contentLeft>
+        <contentMiddle>
+          <Title text="{i18n>titleSettings}"/>
+        </contentMiddle>
+      </Bar>
+    </headerContent>
+    <content>
+      <Panel headerText="">
+        <content>
+          <form:SimpleForm editable="true" layout="ResponsiveGridLayout" id="__form1" title="{i18n>ConnectionSettings}">
+            <form:content>
+              <Text text="{i18n>ConnectionWarning}" id="__title1_copy" class="textWarning"/>
+              <Label text="{i18n>url}" id="__label2"/>
+              <Input width="100%" id="__input0" value="{settings>/fullUrl}" required="true"/>
+            </form:content>
+          </form:SimpleForm>
+          <form:SimpleForm editable="true" layout="ResponsiveGridLayout" id="__form0" title="{i18n>LoginSettings}">
+            <form:content>
+              <Text text="{i18n>LoginWarning}" id="__title1" class="textWarning"/>
+              <Label text="{i18n>Username}" id="__label0"/>
+              <Input width="100%" id="idInputUsername" value="{settings>/username}" required="true"/>
+              <Label text="{i18n>Password}" id="__label1"/>
+              <Input width="100%" id="idInputPassword" type="Password" value="{settings>/password}" required="true"/>
+            </form:content>
+          </form:SimpleForm>
+          <List noDataText="{i18n>NoStatusedDefined}" id="__list0" items="{settings>/statuses}" mode="Delete" delete="onDeleteStatus">
+            <headerToolbar>
+              <Toolbar width="100%" id="__toolbar2">
+                <content>
+                  <Title text="{i18n>ReportStatuses}" width="100%" id="__title2"/>
+                  <ToolbarSpacer id="__spacer0"/>
+                  <Button width="100px" id="__button0" icon="sap-icon://add" tooltip="{i18n>addNewStatus}" press="onStatusAdd"/>
+                </content>
+              </Toolbar>
+            </headerToolbar>
+            <items>
+              <CustomListItem id="__item3" type="Active">
+                <content>
+                  <form:SimpleForm editable="true" layout="ResponsiveGridLayout" id="__form2" title="{settings>title}">
+                    <form:content>
+                      <Label text="{i18n>company}" id="__label3_copy"/>
+                      <Input width="100%" id="__input1_copy" value="{settings>company}" required="true" showValueHelp="true" valueHelpOnly="true" valueHelpRequest="onCompanyValueHelp"/>
+                      <Label text="{i18n>project}" id="__label3"/>
+                      <Input width="100%" id="__input1" value="{settings>project}" required="true" showValueHelp="true" valueHelpOnly="true" valueHelpRequest="onProjectValueHelp"/>
+                      <Label text="{i18n>task}" id="__label4"/>
+                      <Input width="100%" id="__input3" value="{settings>task}" required="true" showValueHelp="true" valueHelpOnly="true" valueHelpRequest="onTaskValueHelp"/>
+                      <Label text="{i18n>description}" id="__label4_copy3"/>
+                      <Input width="100%" id="__input3_copy" value="{settings>description}" required="true"/>
+                    </form:content>
+                  </form:SimpleForm>
+                </content>
+              </CustomListItem>
+            </items>
+          </List>
+          <Text id="idTextLast"/>
+        </content>
+      </Panel>
+    </content>
+    <footer>
+      <Toolbar>
+        <Button id="idMessagePopoverButton" icon="sap-icon://message-popup" text="{= ${messages>/}.length }" type="Emphasized" press="onMessagePopover"/>
+        <ToolbarSpacer/>
+        <Button id="idButtonSave" text="{i18n>save}" icon="sap-icon://save" tooltip="{i18n>/settings}" type="Accept" press="onSave"/>
+      </Toolbar>
+    </footer>
+  </Page>
+</mvc:View>

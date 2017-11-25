@@ -1,0 +1,5 @@
+ui/dist/
+ui/resources/
+ssl/
+.vscode/
+node_modules/

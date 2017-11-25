@@ -1,0 +1,11 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core">
+	<SelectDialog id="idValueHelpDialog" noDataText="{valueHelpDialog>/noDataText}" title="{valueHelpDialog>/title}"
+		liveChange="handleValueHelpDialogSearch" confirm="handleValueHelpDialogClose" cancel="handleValueHelpDialogClose"
+		items="{valueHelpDialog>/items}">
+		<StandardListItem title="{valueHelpDialog>text}">
+			<customData>
+				<core:CustomData key="id" value="{valueHelpDialog>id}"/>
+			</customData>
+		</StandardListItem>
+	</SelectDialog>
+</core:FragmentDefinition>

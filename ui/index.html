@@ -1,0 +1,43 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta charset="UTF-8">
+
+  <title>Timecard</title>
+
+  <script 
+    id="sap-ui-bootstrap" 
+    src="resources/sap-ui-core.js" 
+    data-sap-ui-language="HE"
+    data-sap-ui-libs="sap.m"
+    data-sap-ui-theme="sap_belize" 
+    data-sap-ui-compatVersion="edge"
+    data-sap-ui-resourceroots='{"com.sap.dotproject.timecard": "./dist"}'>
+  </script>
+
+  <script>
+    jQuery.sap.setIcons({
+      'phone': '/dist/Icon-App-57x57@1x.png',
+      'phone@2': '/dist/Icon-App-57x57@2x.png',
+      'tablet': '/dist/Icon-App-72x72@1x.png',
+      'tablet@2': '/dist/Icon-App-72x72@2x.png',
+      'favicon': '/dist/favicon.ico',
+      'precomposed': true
+    });
+    sap.ui.getCore().attachInit(function () {
+      new sap.m.Shell({
+        app: new sap.ui.core.ComponentContainer({
+          height: "100%",
+          name: "com.sap.dotproject.timecard"
+        })
+      }).placeAt("content");
+    });
+  </script>
+</head>
+
+<body class="sapUiBody" id="content">
+</body>
+
+</html>

@@ -1,0 +1,45 @@
+<mvc:View 
+  xmlns:html="http://www.w3.org/1999/xhtml" 
+  xmlns:mvc="sap.ui.core.mvc" 
+  xmlns="sap.m" 
+  xmlns:form="sap.ui.layout.form" 
+  xmlns:core="sap.ui.core" controllerName="com.sap.dotproject.timecard.controller.Main" displayBlock="true">
+  <Page id="idPageMain" floatingFooter="true">
+    <headerContent>
+      <Bar>
+        <contentLeft>
+          <Button id="idButtonSettings" icon="sap-icon://settings" tooltip="{i18n>/settings}" press="onSettings"/>
+        </contentLeft>
+        <contentMiddle>
+          <Title text="{i18n>titleMain}"/>
+        </contentMiddle>
+      </Bar>
+    </headerContent>
+    <content>
+      <form:SimpleForm editable="true" layout="ResponsiveGridLayout" id="__form0">
+        <form:content>
+          <Text text="{i18n>timecardWarning}" id="__title1"/>
+          <Label text="{i18n>status}" id="__label1"/>
+          <ComboBox id="__box0" items="{settings>/statuses}" required="true" selectedKey="{timecard>/statusId}">
+            <items>
+              <core:ListItem text="{settings>title}" key="{settings>statusId}"/>
+            </items>
+          </ComboBox>
+          <Label text="{i18n>date}" width="100%" id="__label2"/>
+          <DatePicker width="100%" id="__input2" required="true" valueFormat="dd/MM/YYYY" displayFormat="dd/MM/YYYY" value="{timecard>/date}"/>
+          <Label text="{i18n>startTime}" width="100%" id="__label3"/>
+          <TimePicker width="100%" id="__input3" valueFormat="HH:mm" displayFormat="HH:mm" required="true" value="{timecard>/timeBegin}"/>
+          <Label text="{i18n>endTime}" width="100%" id="__label5"/>
+          <TimePicker width="100%" id="__input5" valueFormat="HH:mm" displayFormat="HH:mm" required="true" value="{timecard>/timeEnd}"/>
+        </form:content>
+      </form:SimpleForm>
+    </content>
+    <footer>
+      <Toolbar>
+        <Button id="idMessagePopoverButton" icon="sap-icon://message-popup" text="{= ${messages>/}.length }" type="Emphasized" press="onMessagePopover"/>
+        <ToolbarSpacer/>
+        <Button text="{i18n>report}" width="100px" id="__button0" type="Accept" press="onReport"/>
+      </Toolbar>
+    </footer>
+  </Page>
+</mvc:View>
