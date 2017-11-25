@@ -39,11 +39,6 @@ app.post('/api/timecard', timecard);
 // enable directory listening
 app.use('/', serveIndex(ui5Resources));
 
-var options = {
-  key: fs.readFileSync(path.join(__dirname, 'ssl', 'localhost-privkey.pem')),
-  cert: fs.readFileSync(path.join(__dirname, 'ssl', 'localhost-cert.pem'))
-};
-
 app.listen(port);
 
 console.log(`Magic happens on port ${port}`);
