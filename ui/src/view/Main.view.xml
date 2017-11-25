@@ -13,6 +13,9 @@
         <contentMiddle>
           <Title text="{i18n>titleMain}"/>
         </contentMiddle>
+        <contentRight>
+          <core:Icon src="{timecard>/loginStatusIcon}" color="{timecard>/loginStatusIconColor}" tooltip="{timecard>/loginStatusIconTooltip}"/>
+        </contentRight>
       </Bar>
     </headerContent>
     <content>

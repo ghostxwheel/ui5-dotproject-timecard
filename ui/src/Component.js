@@ -21,7 +21,7 @@ sap.ui.define([
       UIComponent.prototype.init.apply(this, arguments);
 
       this.setModel(models.createDeviceModel(), "device");
-      this.setModel(models.createTimecardModel(), "timecard");
+      this.setModel(models.createTimecardModel(this), "timecard");
       this.setModel(models.createSettingsModel(), "settings");
       this.setModel(models.createAddStatusDialogModel(), "addStatusDialog");
       this.setModel(models.createValueHelpDialogModel(), "valueHelpDialog");

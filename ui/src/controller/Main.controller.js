@@ -18,6 +18,45 @@ sap.ui.define([
       oTimecardModel.setProperty("/statusId", oSettingsModel.getProperty("/defaultStatusId"));
 
       oMessageManager.registerObject(this.getView(), true);
+
+      this.loginCheck();
+    },
+
+    loginCheck: function() {
+      var oComponent = this.getOwnerComponent();
+      var oResourceBundle = oComponent.getModel("i18n").getResourceBundle();
+      var oTimecardModel = oComponent.getModel("timecard");
+      var oSettingsModel = oComponent.getModel("settings");
+      var oPostData = helpers.getApiPostData(oSettingsModel);
+
+      if (oPostData.url === "" || oPostData.username === "" || oPostData.password === "") {
+
+        oTimecardModel.setProperty("/loginStatusIcon", "sap-icon://message-error");
+        oTimecardModel.setProperty("/loginStatusIconColor", "red");
+        oTimecardModel.setProperty("/loginStatusIconTooltip", oResourceBundle.getText("loginStatusErrorTooltip"));
+
+      } else {
+
+        jQuery.ajax("/api/loginCheck", {
+          method: "POST",
+          data: oPostData,
+          success: function () {
+            
+            oTimecardModel.setProperty("/loginStatusIcon", "sap-icon://message-success");
+            oTimecardModel.setProperty("/loginStatusIconColor", "green");
+            oTimecardModel.setProperty("/loginStatusIconTooltip", oResourceBundle.getText("loginStatusSuccessTooltip"));
+
+          }.bind(this),
+          error: function () {
+        
+            oTimecardModel.setProperty("/loginStatusIcon", "sap-icon://message-error");
+            oTimecardModel.setProperty("/loginStatusIconColor", "red");
+            oTimecardModel.setProperty("/loginStatusIconTooltip", oResourceBundle.getText("loginStatusErrorTooltip"));
+
+          }.bind(this)
+        });
+
+      }
     },
 
     onSettings: function (oEvent) {

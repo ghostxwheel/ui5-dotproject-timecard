@@ -15,13 +15,17 @@ sap.ui.define([
       return oModel;
     },
     
-    createTimecardModel: function() {
+    createTimecardModel: function(oComponent) {
+      var oResourceBundle = oComponent.getModel("i18n").getResourceBundle();
       var oDateNow = new Date();
       var oDateFormatter = DateFormat.getDateInstance({
         pattern: "dd/MM/yyyy"
       });
 
       var oModel = new JSONModel({
+        loginStatusIcon: "sap-icon://message-warning",
+        loginStatusIconColor: "yellow",
+        loginStatusIconTooltip: oResourceBundle.getText("loginStatusWarningTooltip"),
         statusId: 0,
         date: oDateFormatter.format(oDateNow),
         timeBegin: "08:00",
