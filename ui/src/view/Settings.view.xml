@@ -4,7 +4,7 @@
   xmlns="sap.m" 
   xmlns:core="sap.ui.core" 
   xmlns:form="sap.ui.layout.form" controllerName="com.sap.dotproject.timecard.controller.Settings" displayBlock="true">
-  <Page id="idPageSettings" floatingFooter="true">
+  <Page id="idPageSettings">
     <headerContent>
       <Bar>
         <contentLeft>
