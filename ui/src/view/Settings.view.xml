@@ -4,7 +4,7 @@
   xmlns="sap.m" 
   xmlns:core="sap.ui.core" 
   xmlns:form="sap.ui.layout.form" controllerName="com.sap.dotproject.timecard.controller.Settings" displayBlock="true">
-  <Page id="idPageSettings" floatingFooter="true">
+  <Page id="idPageSettings">
     <headerContent>
       <Bar>
         <contentLeft>
@@ -71,7 +71,7 @@
       <Toolbar>
         <Button id="idMessagePopoverButton" icon="sap-icon://message-popup" text="{= ${messages>/}.length }" type="Emphasized" press="onMessagePopover"/>
         <ToolbarSpacer/>
-        <Button id="idButtonSave" text="{i18n>save}" icon="sap-icon://save" tooltip="{i18n>/settings}" type="Accept" press="onSave"/>
+        <Button id="idButtonSave" width="100px" text="{i18n>save}" type="Accept" press="onSave"/>
       </Toolbar>
     </footer>
   </Page>

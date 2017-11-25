@@ -7,7 +7,8 @@
     "start": "node index.js",
     "dev": "echo 'Run development' && npm run build && gulp nodemon",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "gulp build"
+    "build": "gulp build",
+    "postinstall": "npm run build"
   },
   "author": "https://github.com/ghostxwheel",
   "license": "ISC",
@@ -17,9 +18,7 @@
     "compression": "latest",
     "express": "latest",
     "request": "latest",
-    "serve-index": "latest"
-  },
-  "devDependencies": {
+    "serve-index": "latest",
     "gulp": "^3.9.1",
     "gulp-clean": "^0.3.2",
     "gulp-copy": "^1.0.1",

@@ -15,7 +15,7 @@ const app = express();
 
 const ui5Resources = path.join(__dirname, 'ui');
 const year = 60 * 60 * 24 * 365 * 1000;
-const port = '8081';
+const port = process.env.PORT || '8081';
 
 app.use(compression());
 app.use(bodyParser.json());
@@ -38,11 +38,6 @@ app.post('/api/timecard', timecard);
 
 // enable directory listening
 app.use('/', serveIndex(ui5Resources));
-
-var options = {
-  key: fs.readFileSync(path.join(__dirname, 'ssl', 'localhost-privkey.pem')),
-  cert: fs.readFileSync(path.join(__dirname, 'ssl', 'localhost-cert.pem'))
-};
 
 app.listen(port);
 
