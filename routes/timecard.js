@@ -12,14 +12,14 @@ const timecard = function (req, res) {
 
   login("m=ajax", req, res, function (err, httpResponse, body) {
     if (err) {
-      res.send({ success: false });
+      res.status(400).send("Remote server is down. HTTP status: " + httpResponse.statusCode);
     } else {
       var $timecardPage = cheerio.load(body);
       var link = $timecardPage('a:contains(My Info)');
       var userId = link.prop('href').split('&')[2].split('=')[1];
 
       if (!req.body || !req.body.date || !req.body.timeBegin || !req.body.timeEnd || !req.body.description) {
-        res.send({ success: false });
+        res.status(400).send("Form data is incomplete");
       } else {
         var strDate = req.body.date;
         var strTimeBegin = req.body.timeBegin;

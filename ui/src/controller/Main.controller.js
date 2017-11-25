@@ -139,8 +139,8 @@ sap.ui.define([
           this.onMessagePopover();
 
         }.bind(this),
-        error: function () {
-
+        error: function (oError) {
+          
           this.getView().setBusy(false);
 
           oMessageManager.addMessages(new Message({
@@ -148,10 +148,16 @@ sap.ui.define([
             type: MessageType.Error,
             processor: oMessageProcessor
           }));
+          
+          oMessageManager.addMessages(new Message({
+            message: oError.responseText,
+            type: MessageType.Error,
+            processor: oMessageProcessor
+          }));
 
           this.onMessagePopover();
 
-        }
+        }.bind(this),
       })
     },
 
