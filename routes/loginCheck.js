@@ -16,9 +16,9 @@ const loginCheck = function (req, res) {
       var $errorOnPage = $loginResponse(".error .message");
 
       if (!$errorOnPage || !$errorOnPage.text() || $errorOnPage.text() === "") {
-        res.status(400).send("Failed to connect to remote server. Login failed.");
-      } else {
         res.send("Success");
+      } else {
+        res.status(400).send("Failed to connect to remote server. Login failed.");
       }
     }
 
