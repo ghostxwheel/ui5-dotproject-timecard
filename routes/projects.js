@@ -14,9 +14,7 @@ const projects = function (req, res) {
     if (err) {
       res.send([]);
     } else {
-      var $timecardPage = cheerio.load(body);
-      var link = $timecardPage('a:contains(My Info)');
-      var userId = link.prop('href').split('&')[2].split('=')[1];
+      var userId = helpers.getUserId(body);
 
       request.post(host + queries, {
         form: {

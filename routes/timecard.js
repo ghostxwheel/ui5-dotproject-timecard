@@ -14,9 +14,7 @@ const timecard = function (req, res) {
     if (err) {
       res.status(400).send("Remote server is down. HTTP status: " + httpResponse.statusCode);
     } else {
-      var $timecardPage = cheerio.load(body);
-      var link = $timecardPage('a:contains(My Info)');
-      var userId = link.prop('href').split('&')[2].split('=')[1];
+      var userId = helpers.getUserId(body);
 
       if (!req.body || !req.body.date || !req.body.timeBegin || !req.body.timeEnd || !req.body.description) {
         res.status(400).send("Form data is incomplete");

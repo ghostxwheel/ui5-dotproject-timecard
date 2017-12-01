@@ -1,14 +1,18 @@
 sap.ui.define([
   "sap/ui/core/mvc/Controller",
-  "com/sap/dotproject/timecard/model/helpers",
+  "com/ui5/dotproject/timecard/model/helpers",
   "sap/m/MessageToast",
   "sap/ui/core/message/ControlMessageProcessor",
   "sap/ui/core/message/Message",
-  "sap/ui/core/MessageType"
-], function (Controller, helpers, MessageToast, ControlMessageProcessor, Message, MessageType) {
+  "sap/ui/core/MessageType",
+  "com/ui5/dotproject/timecard/util/formatter",
+  "com/ui5/dotproject/timecard/util/storage"
+], function (Controller, helpers, MessageToast, ControlMessageProcessor, Message, MessageType, formatter, storage) {
   "use strict";
 
-  return Controller.extend("com.sap.dotproject.timecard.controller.Main", {
+  return Controller.extend("com.ui5.dotproject.timecard.controller.Main", {
+    formatter: formatter,
+
     onInit: function () {
       var oMessageManager = sap.ui.getCore().getMessageManager();
       var oComponent = this.getOwnerComponent();
@@ -19,44 +23,127 @@ sap.ui.define([
 
       oMessageManager.registerObject(this.getView(), true);
 
+      this.removeCalendarEventHandlers();
       this.loginCheck();
+      this.refreshReportTableData();
     },
-
-    loginCheck: function() {
+    
+    refreshReportStatsData: function () {
       var oComponent = this.getOwnerComponent();
-      var oResourceBundle = oComponent.getModel("i18n").getResourceBundle();
       var oTimecardModel = oComponent.getModel("timecard");
       var oSettingsModel = oComponent.getModel("settings");
       var oPostData = helpers.getApiPostData(oSettingsModel);
 
+      if (oPostData.url !== "" && oPostData.username !== "" && oPostData.password !== "") {
+        this.getView().setBusy(true);
+
+        oPostData.year = oTimecardModel.getProperty("/currentYear");
+        oPostData.month = oTimecardModel.getProperty("/currentMonth");
+
+        jQuery.ajax("/api/stats", {
+          method: "POST",
+          data: oPostData,
+          success: function (oStatsData) {
+            this.getView().setBusy(false);
+
+            oTimecardModel.setProperty("/hoursWorked", oStatsData.hoursWorkedTotal);
+          }.bind(this),
+          error: function () {
+            this.getView().setBusy(false);
+
+            oTimecardModel.setProperty("/hoursWorked", 0);
+          }.bind(this)
+        });
+      }
+    },
+
+    refreshReportTableData: function () {
+      var oComponent = this.getOwnerComponent();
+      var oTimecardModel = oComponent.getModel("timecard");
+      var oSettingsModel = oComponent.getModel("settings");
+      var oPostData = helpers.getApiPostData(oSettingsModel);
+      
+      this.refreshReportStatsData();
+
+      if (oPostData.url !== "" && oPostData.username !== "" && oPostData.password !== "") {
+        this.getView().setBusy(true);
+
+        oPostData.year = oTimecardModel.getProperty("/currentYear");
+        oPostData.month = oTimecardModel.getProperty("/currentMonth");
+
+        jQuery.ajax("/api/report", {
+          method: "POST",
+          data: oPostData,
+          success: function (oArrData) {
+            this.getView().setBusy(false);
+            var arrStatuses = oSettingsModel.getProperty("/statuses");
+
+            var arrHoursReported = oArrData.map(function (oArrData) {
+              var oAdditionalData = {};
+              var arrFilteredStatus = arrStatuses.filter(function (oStatus) {
+                return (parseInt(oStatus.companyId) === oArrData.companyId
+                  && parseInt(oStatus.projectId) === oArrData.projectId
+                  && parseInt(oStatus.taskId) === oArrData.taskId
+                  && oStatus.description === oArrData.description);
+              });
+
+              if (arrFilteredStatus.length > 0) {
+                oAdditionalData.status = arrFilteredStatus[0].title;
+              }
+
+              oArrData.hoursWorked = parseFloat(oArrData.hoursWorked).toFixed(2).toString();
+
+              return jQuery.extend(true, oArrData, oAdditionalData);
+            });
+
+            oTimecardModel.setProperty("/hoursReported", arrHoursReported);
+          }.bind(this),
+          error: function () {
+            this.getView().setBusy(false);
+
+            oTimecardModel.setProperty("/hoursReported", []);
+          }.bind(this)
+        });
+      }
+    },
+
+    loginCheck: function () {
+      var oComponent = this.getOwnerComponent();
+      var oSettingsModel = oComponent.getModel("settings");
+      var oPostData = helpers.getApiPostData(oSettingsModel);
+
       if (oPostData.url === "" || oPostData.username === "" || oPostData.password === "") {
-
-        oTimecardModel.setProperty("/loginStatusIcon", "sap-icon://message-error");
-        oTimecardModel.setProperty("/loginStatusIconColor", "red");
-        oTimecardModel.setProperty("/loginStatusIconTooltip", oResourceBundle.getText("loginStatusErrorTooltip"));
-
+        helpers.setLoginStatusError(oComponent);
       } else {
-
         jQuery.ajax("/api/loginCheck", {
           method: "POST",
           data: oPostData,
           success: function () {
-            
-            oTimecardModel.setProperty("/loginStatusIcon", "sap-icon://message-success");
-            oTimecardModel.setProperty("/loginStatusIconColor", "green");
-            oTimecardModel.setProperty("/loginStatusIconTooltip", oResourceBundle.getText("loginStatusSuccessTooltip"));
-
-          }.bind(this),
+            helpers.setLoginStatusSuccess(oComponent);
+          },
           error: function () {
-        
-            oTimecardModel.setProperty("/loginStatusIcon", "sap-icon://message-error");
-            oTimecardModel.setProperty("/loginStatusIconColor", "red");
-            oTimecardModel.setProperty("/loginStatusIconTooltip", oResourceBundle.getText("loginStatusErrorTooltip"));
-
-          }.bind(this)
+            helpers.setLoginStatusError(oComponent);
+          }
         });
-
       }
+    },
+
+    removeCalendarEventHandlers: function () {
+      var oCalendar = this.getView().byId("idCalendar");
+      var oCalHead = sap.ui.getCore().byId(oCalendar.getId() + "--Head");
+      var oCalMonth = sap.ui.getCore().byId(oCalendar.getId() + "--Month0");
+
+      oCalMonth.addEventDelegate({
+        onAfterRendering: function (oEvent) {
+          oEvent.srcControl.$().css("display", "none");
+        }
+      });
+
+      var oListener = oCalHead.mEventRegistry["pressButton1"][0];
+      oCalHead.detachPressButton1(oListener.fFunction, oListener.oListener);
+
+      oListener = oCalHead.mEventRegistry["pressButton2"][0];
+      oCalHead.detachPressButton2(oListener.fFunction, oListener.oListener);
     },
 
     onSettings: function (oEvent) {
@@ -139,14 +226,14 @@ sap.ui.define([
       strSelectedStatusId = oTimecardModel.getProperty("/statusId");
       arrStatuses = oSettingsModel.getProperty("/statuses");
       oStatus = null;
-      oFormData = null
+      oFormData = null;
       oMessageManager = sap.ui.getCore().getMessageManager();
       oMessageProcessor = new ControlMessageProcessor();
 
       oMessageManager.registerMessageProcessor(oMessageProcessor);
 
-      oStatus = arrStatuses.filter(function (oStatus) {
-        return oStatus.statusId === parseInt(strSelectedStatusId, 10);
+      oStatus = arrStatuses.filter(function (oArrayStatus) {
+        return oArrayStatus.statusId === parseInt(strSelectedStatusId, 10);
       })[0];
 
       oFormData = {
@@ -154,7 +241,7 @@ sap.ui.define([
         timeBegin: oTimecardModel.getProperty("/timeBegin"),
         timeEnd: oTimecardModel.getProperty("/timeEnd"),
         taskId: oStatus.taskId,
-        description: oStatus.description,
+        description: oStatus.description
       };
 
       oFormData = jQuery.extend(true, oFormData, helpers.getApiPostData(oSettingsModel));
@@ -166,7 +253,6 @@ sap.ui.define([
         method: "POST",
         data: oFormData,
         success: function (oData) {
-
           this.getView().setBusy(false);
 
           oMessageManager.addMessages(new Message({
@@ -176,10 +262,8 @@ sap.ui.define([
           }));
 
           this.onMessagePopover();
-
         }.bind(this),
         error: function (oError) {
-          
           this.getView().setBusy(false);
 
           oMessageManager.addMessages(new Message({
@@ -187,7 +271,7 @@ sap.ui.define([
             type: MessageType.Error,
             processor: oMessageProcessor
           }));
-          
+
           oMessageManager.addMessages(new Message({
             message: oError.responseText,
             type: MessageType.Error,
@@ -195,9 +279,8 @@ sap.ui.define([
           }));
 
           this.onMessagePopover();
-
-        }.bind(this),
-      })
+        }.bind(this)
+      });
     },
 
     onMessagePopover: function (oEvent) {
@@ -205,12 +288,58 @@ sap.ui.define([
       var oDialog = oView.byId("idMessagePopover");
 
       if (!oDialog) {
-        oDialog = sap.ui.xmlfragment(oView.getId(), "com.sap.dotproject.timecard.view.MessagePopover", this);
+        oDialog = sap.ui.xmlfragment(oView.getId(), "com.ui5.dotproject.timecard.view.MessagePopover", this);
 
         oView.addDependent(oDialog);
       }
 
       oDialog.toggle(this.getView().byId("idMessagePopoverButton"));
+    },
+
+    onTabSelect: function (oEvent) {
+      var strKey = oEvent.getParameters().key;
+      var oComponent = this.getOwnerComponent();
+      var oTimecardModel = oComponent.getModel("timecard");
+
+      oTimecardModel.setProperty("/footerToolbarVisible", (strKey === "reportWorkHours"))
+    },
+
+    onAddMinimumHours: function () {
+      var oComponent = this.getOwnerComponent();
+      var oModel = oComponent.getModel("settings");
+      var nHoursMinimum = oModel.getProperty("/hoursMinimum");
+
+      nHoursMinimum += 1;
+
+      oModel.setProperty("/hoursMinimum", nHoursMinimum);
+
+      storage.put(oModel);
+    },
+
+    onSubtractMinimumHours: function () {
+      var oComponent = this.getOwnerComponent();
+      var oModel = oComponent.getModel("settings");
+      var nHoursMinimum = oModel.getProperty("/hoursMinimum");
+
+      nHoursMinimum -= 1;
+
+      oModel.setProperty("/hoursMinimum", nHoursMinimum);
+
+      storage.put(oModel);
+    },
+
+    onCalendarChange: function (oEvent) {
+      var oComponent = this.getOwnerComponent();
+      var oResourceBundle = oComponent.getModel("i18n").getResourceBundle();
+      var oTimecardModel = oComponent.getModel("timecard");
+      var oDate = oEvent.getSource().getStartDate();
+
+      oTimecardModel.setProperty("/currentMonthDescription",
+        oResourceBundle.getText("month" + oDate.getMonth()));
+      oTimecardModel.setProperty("/currentMonth", oDate.getMonth() + 1);
+      oTimecardModel.setProperty("/currentYear", oDate.getFullYear());
+
+      this.refreshReportTableData();
     }
   });
 });

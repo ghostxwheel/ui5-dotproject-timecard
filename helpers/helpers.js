@@ -1,3 +1,5 @@
+const cheerio = require('cheerio');
+
 const helpers = {
   getHostWithoutIndex: function (host) {
     if (!host) {
@@ -37,6 +39,14 @@ const helpers = {
       success: true,
       hoursHidden: (d2 - d1) / (1000 * 60 * 60)
     };
+  },
+
+  getUserId: function (body) {
+    var $timecardPage = cheerio.load(body);
+    var link = $timecardPage('a:contains(My Info)');
+    var userId = link.prop('href').split('&')[2].split('=')[1];
+
+    return userId;
   }
 }
 

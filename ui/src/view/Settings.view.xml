@@ -3,7 +3,7 @@
   xmlns:mvc="sap.ui.core.mvc" 
   xmlns="sap.m" 
   xmlns:core="sap.ui.core" 
-  xmlns:form="sap.ui.layout.form" controllerName="com.sap.dotproject.timecard.controller.Settings" displayBlock="true">
+  xmlns:form="sap.ui.layout.form" controllerName="com.ui5.dotproject.timecard.controller.Settings" displayBlock="true">
   <Page id="idPageSettings">
     <headerContent>
       <Bar>

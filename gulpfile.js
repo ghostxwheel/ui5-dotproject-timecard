@@ -17,7 +17,7 @@ gulp.task('ui5preload', function () {
   return gulp.src(['ui/src/**/**.+(js|xml|json|properties)'])
     .pipe(gulpif('**/*.js', uglify()))    //only pass .js files to uglify 
     .pipe(gulpif('**/*.xml', prettydata({ type: 'minify' }))) // only pass .xml to prettydata  
-    .pipe(ui5preload({ base: 'ui/src', namespace: 'com.sap.dotproject.timecard' }))
+    .pipe(ui5preload({ base: 'ui/src', namespace: 'com.ui5.dotproject.timecard' }))
     .pipe(gulp.dest('ui/dist'));
 });
 

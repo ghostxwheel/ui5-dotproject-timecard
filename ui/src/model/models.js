@@ -2,9 +2,8 @@ sap.ui.define([
   "sap/ui/model/json/JSONModel",
   "sap/ui/Device",
   "sap/ui/core/format/DateFormat",
-  "jquery.sap.global",
-  "jquery.sap.storage"
-], function(JSONModel, Device, DateFormat, jQuery) {
+  "com/ui5/dotproject/timecard/util/storage"
+], function(JSONModel, Device, DateFormat, storage) {
   "use strict";
 
   return {
@@ -23,6 +22,12 @@ sap.ui.define([
       });
 
       var oModel = new JSONModel({
+        footerToolbarVisible: true,
+        currentMonthDescription: oResourceBundle.getText("month" + new Date().getMonth()),
+        currentMonth: new Date().getMonth() + 1,
+        currentYear: new Date().getFullYear(),
+        hoursWorked: 0,
+        hoursReported: [],
         loginStatusIcon: "sap-icon://message-warning",
         loginStatusIconColor: "yellow",
         loginStatusIconTooltip: oResourceBundle.getText("loginStatusWarningTooltip"),
@@ -36,38 +41,16 @@ sap.ui.define([
     },
 
     createSettingsModel: function() {
-      var oStorage = jQuery.sap.storage(jQuery.sap.storage.Type.local);
       var oModel = new JSONModel({
+        hoursMinimum: 186,
         fullUrl: "http://",
         username: "",
         password: "",
         statuses: [],
         defaultStatusId: 0
       });
-
-      var oSettings = oStorage.get("settings");
-
-      if (oSettings) {
-        if (oSettings.fullUrl) {
-          oModel.setProperty("/fullUrl", oSettings.fullUrl);
-        }
-
-        if (oSettings.username) {
-          oModel.setProperty("/username", oSettings.username);
-        }
-
-        if (oSettings.password) {
-          oModel.setProperty("/password", oSettings.password);
-        }
-
-        if (oSettings.statuses) {
-          oModel.setProperty("/statuses", oSettings.statuses);
-        }
-
-        if (oSettings.defaultStatusId) {
-          oModel.setProperty("/defaultStatusId", oSettings.defaultStatusId);
-        }
-      }
+      
+      storage.pull(oModel);
 
       return oModel;
     },

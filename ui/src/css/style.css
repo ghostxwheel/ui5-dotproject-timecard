@@ -1,5 +1,11 @@
 /* Enter your custom styles here */
 .textWarning {
-	color: red;
+	color: #ff0000;
 	font-weight: 700;
+}
+.toolbarNoFooterLine {
+    border-bottom: 0 !important;
+}
+.iconPadded {
+    padding: 0.1rem;
 }

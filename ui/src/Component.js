@@ -1,11 +1,11 @@
 sap.ui.define([
   "sap/ui/core/UIComponent",
   "sap/ui/Device",
-  "com/sap/dotproject/timecard/model/models"
+  "com/ui5/dotproject/timecard/model/models"
 ], function(UIComponent, Device, models) {
   "use strict";
 
-  return UIComponent.extend("com.sap.dotproject.timecard.Component", {
+  return UIComponent.extend("com.ui5.dotproject.timecard.Component", {
 
     metadata: {
       manifest: "json"

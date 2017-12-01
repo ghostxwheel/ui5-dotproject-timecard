@@ -3,7 +3,7 @@ sap.ui.define([
 ], function(Controller) {
   "use strict";
 
-  return Controller.extend("com.sap.dotproject.timecard.controller.App", {
+  return Controller.extend("com.ui5.dotproject.timecard.controller.App", {
   	
   });
 });

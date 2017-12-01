@@ -5,10 +5,11 @@ sap.ui.define([
   "sap/m/Dialog",
   "sap/ui/model/Filter",
   "sap/ui/model/FilterOperator",
-  "com/sap/dotproject/timecard/model/helpers"
-], function (Controller, History, MessageToast, Dialog, Filter, FilterOperator, helpers) {
+  "com/ui5/dotproject/timecard/model/helpers",
+  "com/ui5/dotproject/timecard/util/storage"
+], function (Controller, History, MessageToast, Dialog, Filter, FilterOperator, helpers, storage) {
   "use strict";
-  return Controller.extend("com.sap.dotproject.timecard.controller.Settings", {
+  return Controller.extend("com.ui5.dotproject.timecard.controller.Settings", {
     setInputCallback: null,
 
     onBack: function (oEvent) {
@@ -25,11 +26,9 @@ sap.ui.define([
     },
 
     onSave: function (oEvent) {
-      var oStorage = jQuery.sap.storage(jQuery.sap.storage.Type.local);
-      var oModel = this.getOwnerComponent().getModel("settings");
       var oResourceBundle = this.getOwnerComponent().getModel("i18n").getResourceBundle();
-
-      oStorage.put("settings", oModel.getProperty("/"));
+      
+      storage.put(this.getOwnerComponent().getModel("settings"));
 
       this.onBack(oEvent);
 
@@ -46,7 +45,7 @@ sap.ui.define([
       oModel.setProperty("/name", "");
 
       if (!oDialog) {
-        oDialog = sap.ui.xmlfragment(oView.getId(), "com.sap.dotproject.timecard.view.AddStatusDialog", this);
+        oDialog = sap.ui.xmlfragment(oView.getId(), "com.ui5.dotproject.timecard.view.AddStatusDialog", this);
 
         oView.addDependent(oDialog);
       }
@@ -206,7 +205,7 @@ sap.ui.define([
       this.setInputCallback = fnSetInputCallback;
 
       if (!oDialog) {
-        oDialog = sap.ui.xmlfragment(oView.getId(), "com.sap.dotproject.timecard.view.ValueHelpDialog", this);
+        oDialog = sap.ui.xmlfragment(oView.getId(), "com.ui5.dotproject.timecard.view.ValueHelpDialog", this);
 
         oView.addDependent(oDialog);
       }

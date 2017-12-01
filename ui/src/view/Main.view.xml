@@ -2,9 +2,13 @@
   xmlns:html="http://www.w3.org/1999/xhtml" 
   xmlns:mvc="sap.ui.core.mvc" 
   xmlns="sap.m" 
-  xmlns:form="sap.ui.layout.form" 
-  xmlns:core="sap.ui.core" controllerName="com.sap.dotproject.timecard.controller.Main" displayBlock="true">
-  <Page id="idPageMain">
+  xmlns:l="sap.ui.layout" 
+  xmlns:f="sap.ui.layout.form" 
+  xmlns:core="sap.ui.core" 
+  xmlns:mc="sap.suite.ui.microchart" 
+  xmlns:u="sap.ui.unified" 
+  xmlns:c="com.ui5.dotproject.timecard.control" controllerName="com.ui5.dotproject.timecard.controller.Main" displayBlock="true">
+  <Page id="idPageMain" showFooter="{timecard>/footerToolbarVisible}">
     <headerContent>
       <Bar>
         <contentLeft>
@@ -19,23 +23,78 @@
       </Bar>
     </headerContent>
     <content>
-      <form:SimpleForm editable="true" layout="ResponsiveGridLayout" id="__form0">
-        <form:content>
-          <Text text="{i18n>timecardWarning}" id="__title1"/>
-          <Label text="{i18n>status}" id="__label1"/>
-          <ComboBox id="__box0" items="{settings>/statuses}" required="true" selectedKey="{timecard>/statusId}">
-            <items>
-              <core:ListItem text="{settings>title}" key="{settings>statusId}"/>
-            </items>
-          </ComboBox>
-          <Label text="{i18n>date}" width="100%" id="__label2"/>
-          <DatePicker width="100%" id="__input2" required="true" valueFormat="dd/MM/YYYY" displayFormat="dd/MM/YYYY" value="{timecard>/date}"/>
-          <Label text="{i18n>startTime}" width="100%" id="__label3"/>
-          <TimePicker width="100%" id="__input3" valueFormat="HH:mm" displayFormat="HH:mm" required="true" value="{timecard>/timeBegin}"/>
-          <Label text="{i18n>endTime}" width="100%" id="__label5"/>
-          <TimePicker width="100%" id="__input5" valueFormat="HH:mm" displayFormat="HH:mm" required="true" value="{timecard>/timeEnd}"/>
-        </form:content>
-      </form:SimpleForm>
+      <IconTabBar selectedKey="__xmlview0--__filter4" id="__bar2" expandable="false" backgroundDesign="Translucent" select="onTabSelect">
+        <items>
+          <IconTabFilter text="{i18n>reportWorkHours}" id="__filter3" key="reportWorkHours">
+            <content>
+              <f:SimpleForm editable="true" layout="ResponsiveGridLayout" id="__form0">
+                <f:content>
+                  <Text text="{i18n>timecardWarning}" id="__title1"/>
+                  <Label text="{i18n>status}" id="__label1"/>
+                  <ComboBox id="__box0" items="{settings>/statuses}" required="true" selectedKey="{timecard>/statusId}">
+                    <items>
+                      <core:ListItem text="{settings>title}" key="{settings>statusId}"/>
+                    </items>
+                  </ComboBox>
+                  <Label text="{i18n>date}" width="100%" id="__label2"/>
+                  <DatePicker width="100%" id="__input2" required="true" valueFormat="dd/MM/YYYY" displayFormat="dd/MM/YYYY" value="{timecard>/date}"/>
+                  <Label text="{i18n>startTime}" width="100%" id="__label3"/>
+                  <TimePicker width="100%" id="__input3" valueFormat="HH:mm" displayFormat="HH:mm" required="true" value="{timecard>/timeBegin}"/>
+                  <Label text="{i18n>endTime}" width="100%" id="__label5"/>
+                  <TimePicker width="100%" id="__input5" valueFormat="HH:mm" displayFormat="HH:mm" required="true" value="{timecard>/timeEnd}"/>
+                </f:content>
+              </f:SimpleForm>
+            </content>
+          </IconTabFilter>
+          <IconTabFilter id="__filter4" text="{i18n>showReportedHours}" key="showReportedHours">
+            <content>
+              <HBox>
+                <mc:ComparisonMicroChart size="L" scale="" class="sapUiSmallMargin" press="press">
+                  <mc:data>
+                    <mc:ComparisonMicroChartData title="{i18n>hoursMinimum}" value="{settings>/hoursMinimum}" color=""/>
+                    <mc:ComparisonMicroChartData title="{i18n>hoursWorked}" value="{timecard>/hoursWorked}" color="{ parts: [ { path: 'settings>/hoursMinimum' }, { path: 'timecard>/hoursWorked' } ], formatter: '.formatter.formatHoursWorkedColor' }"/>
+                  </mc:data>
+                </mc:ComparisonMicroChart>
+                <Toolbar class="toolbarNoFooterLine">
+                  <Button icon="sap-icon://add" tooltip="{i18n>add}" press="onAddMinimumHours"/>
+                  <Button icon="sap-icon://less" tooltip="{i18n>subtract}" press="onSubtractMinimumHours"/>
+                </Toolbar>
+              </HBox>
+              <c:Calendar id="idCalendar" class="calendarWithoutDays" startDateChange="onCalendarChange"/>
+              <Table items="{timecard>/hoursReported}" headerText="{parts:['i18n>showReportedHoursTableTitle', 'timecard>/currentMonthDescription'], formatter: 'jQuery.sap.formatMessage'}">
+                <items>
+                  <ColumnListItem type="Navigation">
+                    <cells>
+                      <Text text="{timecard>status}"/>
+                      <Text text="{timecard>date}"/>
+                      <Text text="{timecard>timeBegin}"/>
+                      <Text text="{timecard>timeEnd}"/>
+                      <Text text="{timecard>hoursWorked}"/>
+                    </cells>
+                  </ColumnListItem>
+                </items>
+                <columns>
+                  <Column>
+                    <Text text="{i18n>status}"/>
+                  </Column>
+                  <Column width="5rem">
+                    <Text text="{i18n>date}"/>
+                  </Column>
+                  <Column>
+                    <Text text="{i18n>startTime}"/>
+                  </Column>
+                  <Column>
+                    <Text text="{i18n>endTime}"/>
+                  </Column>
+                  <Column>
+                    <Text text="{i18n>hoursWorked}"/>
+                  </Column>
+                </columns>
+              </Table>
+            </content>
+          </IconTabFilter>
+        </items>
+      </IconTabBar>
     </content>
     <footer>
       <Toolbar>

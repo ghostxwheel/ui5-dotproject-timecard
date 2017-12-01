@@ -1,7 +1,7 @@
 {
   "_version": "1.7.0",
   "sap.app": {
-    "id": "com.sap.dotproject.timecard",
+    "id": "com.ui5.dotproject.timecard",
     "type": "application",
     "i18n": "i18n/i18n.properties",
     "applicationVersion": {
@@ -34,7 +34,7 @@
   "sap.ui5": {
     "handleValidation": true,
     "rootView": {
-      "viewName": "com.sap.dotproject.timecard.view.App",
+      "viewName": "com.ui5.dotproject.timecard.view.App",
       "type": "XML"
     },
     "dependencies": {
@@ -53,7 +53,7 @@
       "i18n": {
         "type": "sap.ui.model.resource.ResourceModel",
         "settings": {
-          "bundleName": "com.sap.dotproject.timecard.i18n.i18n"
+          "bundleName": "com.ui5.dotproject.timecard.i18n.i18n"
         }
       }
     },
@@ -72,7 +72,7 @@
           "title": "",
           "controlId": "idApp",
           "controlAggregation": "pages",
-          "viewPath": "com.sap.dotproject.timecard.view"
+          "viewPath": "com.ui5.dotproject.timecard.view"
         },
         "main": {
           "viewType": "XML",
@@ -82,7 +82,7 @@
           "controlId": "idApp",
           "controlAggregation": "pages",
           "title": "",
-          "viewPath": "com.sap.dotproject.timecard.view"
+          "viewPath": "com.ui5.dotproject.timecard.view"
         }
       },
       "routes": [{
@@ -100,7 +100,7 @@
       }],
       "config": {
       	"routerClass": "sap.m.routing.Router",
-        "viewPath": "com.sap.dotproject.timecard.view",
+        "viewPath": "com.ui5.dotproject.timecard.view",
         "controlId": "idApp",
         "controlAggregation": "pages",
         "viewLevel": 0,

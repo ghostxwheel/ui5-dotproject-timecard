@@ -10,6 +10,8 @@ const companies = require('./routes/companies');
 const projects = require('./routes/projects');
 const tasks = require('./routes/tasks');
 const timecard = require('./routes/timecard');
+const report = require('./routes/report');
+const stats = require('./routes/stats');
 
 const app = express();
 
@@ -35,6 +37,8 @@ app.post('/api/companies', companies);
 app.post('/api/companies/:company/projects', projects);
 app.post('/api/companies/:company/projects/:project/tasks', tasks);
 app.post('/api/timecard', timecard);
+app.post('/api/report', report);
+app.post('/api/stats', stats);
 
 // enable directory listening
 app.use('/', serveIndex(ui5Resources));

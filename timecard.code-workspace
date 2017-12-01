@@ -4,5 +4,7 @@
 			"path": "."
 		}
   ],
-  "settings": {}
+  "settings": {
+    "ui5ts.manifestlocation": "ui\\src\\manifest.json"
+  }
 }
