@@ -51,7 +51,7 @@
               <HBox>
                 <mc:ComparisonMicroChart size="L" scale="" class="sapUiSmallMargin" press="press">
                   <mc:data>
-                    <mc:ComparisonMicroChartData title="{i18n>hoursMinimum}" value="{settings>/hoursMinimum}" color=""/>
+                    <mc:ComparisonMicroChartData title="{i18n>hoursMinimum}" value="{settings>/hoursMinimumCurrent}" color=""/>
                     <mc:ComparisonMicroChartData title="{i18n>hoursWorked}" value="{timecard>/hoursWorked}" color="{ parts: [ { path: 'settings>/hoursMinimum' }, { path: 'timecard>/hoursWorked' } ], formatter: '.formatter.formatHoursWorkedColor' }"/>
                   </mc:data>
                 </mc:ComparisonMicroChart>

@@ -39,6 +39,12 @@ sap.ui.define([
 
         oPostData.year = oTimecardModel.getProperty("/currentYear");
         oPostData.month = oTimecardModel.getProperty("/currentMonth");
+        
+        var strKey = oPostData.month + "/" + oPostData.year;
+        var arrHoursMinimum = oSettingsModel.getProperty("/hoursMinimum");
+        var strHoursMinimumCurrent = arrHoursMinimum[strKey] || arrHoursMinimum["default"];
+  
+        oSettingsModel.setProperty("/hoursMinimumCurrent", strHoursMinimumCurrent);
 
         jQuery.ajax("/api/stats", {
           method: "POST",
@@ -307,11 +313,19 @@ sap.ui.define([
     onAddMinimumHours: function () {
       var oComponent = this.getOwnerComponent();
       var oModel = oComponent.getModel("settings");
+      var oTimecardModel = oComponent.getModel("timecard");
       var nHoursMinimum = oModel.getProperty("/hoursMinimum");
+      var strKey = oTimecardModel.getProperty("/currentMonth") 
+        + "/" + oTimecardModel.getProperty("/currentYear");
 
-      nHoursMinimum += 1;
+      if (!nHoursMinimum[strKey]) {
+        nHoursMinimum[strKey] = nHoursMinimum["default"];
+      }
+      
+      nHoursMinimum[strKey] += 1;
 
       oModel.setProperty("/hoursMinimum", nHoursMinimum);
+      oModel.setProperty("/hoursMinimumCurrent", nHoursMinimum[strKey]);
 
       storage.put(oModel);
     },
@@ -319,11 +333,19 @@ sap.ui.define([
     onSubtractMinimumHours: function () {
       var oComponent = this.getOwnerComponent();
       var oModel = oComponent.getModel("settings");
+      var oTimecardModel = oComponent.getModel("timecard");
       var nHoursMinimum = oModel.getProperty("/hoursMinimum");
+      var strKey = oTimecardModel.getProperty("/currentMonth") 
+        + "/" + oTimecardModel.getProperty("/currentYear");
 
-      nHoursMinimum -= 1;
+      if (!nHoursMinimum[strKey]) {
+        nHoursMinimum[strKey] = nHoursMinimum["default"];
+      }
+      
+      nHoursMinimum[strKey] -= 1;
 
       oModel.setProperty("/hoursMinimum", nHoursMinimum);
+      oModel.setProperty("/hoursMinimumCurrent", nHoursMinimum[strKey]);
 
       storage.put(oModel);
     },

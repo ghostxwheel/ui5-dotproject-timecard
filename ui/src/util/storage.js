@@ -13,8 +13,14 @@ sap.ui.define([
       var oSettings = oStorage.get("settings");
 
       if (oSettings) {
-        if (oSettings.hoursMinimum) {
+        if (oSettings.hoursMinimum 
+            && typeof oSettings.hoursMinimum === "object"
+            && oSettings.hoursMinimum !== null) {
           oModel.setProperty("/hoursMinimum", oSettings.hoursMinimum);
+        }
+        
+        if (oSettings.hoursMinimumCurrent) {
+          oModel.setProperty("/hoursMinimumCurrent", oSettings.hoursMinimumCurrent);
         }
 
         if (oSettings.fullUrl) {

@@ -42,7 +42,10 @@ sap.ui.define([
 
     createSettingsModel: function() {
       var oModel = new JSONModel({
-        hoursMinimum: 186,
+        hoursMinimum: {
+          "default": 186
+        },
+        hoursMinimumCurrent: 186,
         fullUrl: "http://",
         username: "",
         password: "",
