@@ -42,6 +42,10 @@ sap.ui.define([
         if (oSettings.defaultStatusId) {
           oModel.setProperty("/defaultStatusId", oSettings.defaultStatusId);
         }
+        
+        if (oSettings.hoursTableSettings) {
+          oModel.setProperty("/hoursTableSettings", oSettings.hoursTableSettings);
+        }
       }
     }
   };

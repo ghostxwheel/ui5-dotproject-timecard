@@ -61,7 +61,14 @@
                 </Toolbar>
               </HBox>
               <c:Calendar id="idCalendar" class="calendarWithoutDays" startDateChange="onCalendarChange"/>
-              <Table items="{timecard>/hoursReported}" headerText="{parts:['i18n>showReportedHoursTableTitle', 'timecard>/currentMonthDescription'], formatter: 'jQuery.sap.formatMessage'}">
+              <Table id="idWorkingHoursReportedTable" items="{timecard>/hoursReported}">
+                <headerToolbar>
+                  <Toolbar>
+                    <Title text="{parts:['i18n>showReportedHoursTableTitle', 'timecard>/currentMonthDescription'], formatter: 'jQuery.sap.formatMessage'}"/>
+                    <ToolbarSpacer/>
+                    <Button tooltip="{i18n>viewSettings}" icon="sap-icon://drop-down-list" press="handleOpenViewSettingsDialog" />
+                  </Toolbar>
+                </headerToolbar>
                 <items>
                   <ColumnListItem type="Navigation">
                     <cells>

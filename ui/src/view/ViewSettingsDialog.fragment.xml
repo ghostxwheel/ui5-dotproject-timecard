@@ -1,0 +1,15 @@
+<core:FragmentDefinition
+	xmlns="sap.m"
+	xmlns:core="sap.ui.core">
+	<ViewSettingsDialog
+    id="idViewSettingsDialog"
+		confirm="handleConfirmViewSettingsDialog">
+		<sortItems>
+			<ViewSettingsItem text="{i18n>status}" key="status" />
+			<ViewSettingsItem text="{i18n>date}" key="date" selected="true" />
+			<ViewSettingsItem text="{i18n>startTime}" key="timeBegin" />
+			<ViewSettingsItem text="{i18n>endTime}" key="timeEnd" />
+			<ViewSettingsItem text="{i18n>hoursWorked}" key="hoursWorked" />
+		</sortItems>
+	</ViewSettingsDialog>
+</core:FragmentDefinition>

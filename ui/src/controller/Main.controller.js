@@ -6,8 +6,9 @@ sap.ui.define([
   "sap/ui/core/message/Message",
   "sap/ui/core/MessageType",
   "com/ui5/dotproject/timecard/util/formatter",
-  "com/ui5/dotproject/timecard/util/storage"
-], function (Controller, helpers, MessageToast, ControlMessageProcessor, Message, MessageType, formatter, storage) {
+  "com/ui5/dotproject/timecard/util/storage",
+  'sap/ui/model/Sorter'
+], function (Controller, helpers, MessageToast, ControlMessageProcessor, Message, MessageType, formatter, storage, Sorter) {
   "use strict";
 
   return Controller.extend("com.ui5.dotproject.timecard.controller.Main", {
@@ -18,6 +19,7 @@ sap.ui.define([
       var oComponent = this.getOwnerComponent();
       var oTimecardModel = oComponent.getModel("timecard");
       var oSettingsModel = oComponent.getModel("settings");
+      var oHoursTableSettings = oSettingsModel.getProperty("/hoursTableSettings");
 
       oTimecardModel.setProperty("/statusId", oSettingsModel.getProperty("/defaultStatusId"));
 
@@ -25,7 +27,23 @@ sap.ui.define([
 
       this.removeCalendarEventHandlers();
       this.loginCheck();
-      this.refreshReportTableData();
+      this.refreshReportTableData(function () {
+        if (oHoursTableSettings) {
+          var oDialog = this.getViewSettingsDialog();
+
+          this.sortHoursTable(oHoursTableSettings.path, oHoursTableSettings.descending);
+
+          oDialog.setSortDescending(oHoursTableSettings.descending);
+          oDialog.getSortItems().forEach(function (oSortItem) {
+            if (oSortItem.getKey() === oHoursTableSettings.path) {
+              oSortItem.setSelected(true);
+              oDialog.setSelectedSortItem(oSortItem);
+            } else if (oSortItem.getSelected() === true) {
+              oSortItem.setSelected(false);
+            }
+          });
+        }
+      });
     },
     
     refreshReportStatsData: function () {
@@ -63,7 +81,7 @@ sap.ui.define([
       }
     },
 
-    refreshReportTableData: function () {
+    refreshReportTableData: function (fnCallback) {
       var oComponent = this.getOwnerComponent();
       var oTimecardModel = oComponent.getModel("timecard");
       var oSettingsModel = oComponent.getModel("settings");
@@ -97,17 +115,27 @@ sap.ui.define([
                 oAdditionalData.status = arrFilteredStatus[0].title;
               }
 
-              oArrData.hoursWorked = parseFloat(oArrData.hoursWorked).toFixed(2).toString();
+              oArrData.hoursWorked = parseFloat(parseFloat(oArrData.hoursWorked).toFixed(2));
 
               return jQuery.extend(true, oArrData, oAdditionalData);
             });
 
             oTimecardModel.setProperty("/hoursReported", arrHoursReported);
+
+            if (fnCallback) {
+              fnCallback.apply(this, []);
+            }
+
           }.bind(this),
           error: function () {
             this.getView().setBusy(false);
 
             oTimecardModel.setProperty("/hoursReported", []);
+            
+            if (fnCallback) {
+              fnCallback.apply(this, []);
+            }
+
           }.bind(this)
         });
       }
@@ -267,6 +295,7 @@ sap.ui.define([
             processor: oMessageProcessor
           }));
 
+          this.refreshReportTableData();
           this.onMessagePopover();
         }.bind(this),
         error: function (oError) {
@@ -284,6 +313,7 @@ sap.ui.define([
             processor: oMessageProcessor
           }));
 
+          this.refreshReportTableData();
           this.onMessagePopover();
         }.bind(this)
       });
@@ -299,6 +329,8 @@ sap.ui.define([
         oView.addDependent(oDialog);
       }
 
+			// toggle compact style
+			jQuery.sap.syncStyleClass(this.getOwnerComponent().getContentDensityClass(), this.getView(), oDialog);
       oDialog.toggle(this.getView().byId("idMessagePopoverButton"));
     },
 
@@ -362,6 +394,56 @@ sap.ui.define([
       oTimecardModel.setProperty("/currentYear", oDate.getFullYear());
 
       this.refreshReportTableData();
+    },
+
+    getViewSettingsDialog: function () {
+      var oView = this.getView();
+      var oDialog = oView.byId("idViewSettingsDialog");
+
+      if (!oDialog) {
+        oDialog = sap.ui.xmlfragment(oView.getId(), "com.ui5.dotproject.timecard.view.ViewSettingsDialog", this);
+
+        oView.addDependent(oDialog);
+      }
+
+      return oDialog;
+    },
+
+    handleOpenViewSettingsDialog: function (oEvent) {
+      var oDialog = this.getViewSettingsDialog();
+      
+			// toggle compact style
+			jQuery.sap.syncStyleClass(this.getOwnerComponent().getContentDensityClass(), this.getView(), oDialog);
+			oDialog.open();
+    },
+
+    handleConfirmViewSettingsDialog: function (oEvent) {
+      var oModel = this.getOwnerComponent().getModel("settings");
+			var mParams = oEvent.getParameters();
+			var sPath;
+			var bDescending;
+      
+			sPath = mParams.sortItem.getKey();
+      bDescending = mParams.sortDescending;
+
+      this.sortHoursTable(sPath, bDescending);
+      
+      oModel.setProperty("/hoursTableSettings", {
+        path: sPath,
+        descending: bDescending
+      });
+
+      storage.put(oModel);
+    },
+
+    sortHoursTable: function(sPath, bDescending) {
+      var aSorters = [];
+      var oView = this.getView();
+			var oTable = oView.byId("idWorkingHoursReportedTable");
+			var oBinding = oTable.getBinding("items");
+      
+			aSorters.push(new Sorter(sPath, bDescending));
+			oBinding.sort(aSorters);
     }
   });
 });
