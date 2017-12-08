@@ -7,8 +7,9 @@ sap.ui.define([
   "sap/ui/core/MessageType",
   "com/ui5/dotproject/timecard/util/formatter",
   "com/ui5/dotproject/timecard/util/storage",
-  'sap/ui/model/Sorter'
-], function (Controller, helpers, MessageToast, ControlMessageProcessor, Message, MessageType, formatter, storage, Sorter) {
+  "sap/ui/model/Sorter",
+  "sap/m/MessageBox"
+], function (Controller, helpers, MessageToast, ControlMessageProcessor, Message, MessageType, formatter, storage, Sorter, MessageBox) {
   "use strict";
 
   return Controller.extend("com.ui5.dotproject.timecard.controller.Main", {
@@ -448,6 +449,94 @@ sap.ui.define([
 
     onRefreshHoursWorkedTableData: function () {
       this.refreshReportTableData();
+    },
+
+    onDeleteReportedHoursButton: function(oEvent) {
+      var oItem = oEvent.getSource().getParent();
+      var oLineItem = oItem.getBindingContext("timecard").getObject();
+      
+      this.confirmDeleteReportedHours(oLineItem);
+    },
+
+    onDeleteReportedHoursSwipe: function(oEvent) {
+      var oItem = oEvent.getSource().getParent().getSwipedItem();
+      var oLineItem = oItem.getBindingContext("timecard").getObject();
+
+      this.confirmDeleteReportedHours(oLineItem);
+    },
+
+    confirmDeleteReportedHours: function (oHoursWorkedData) {
+      var oComponent = this.getOwnerComponent();
+      var oResourceBundle = oComponent.getModel("i18n").getResourceBundle();
+      var bCompact = !!this.getView().$().closest(".sapUiSizeCompact").length;
+      
+			MessageBox.confirm(oResourceBundle.getText("deleteWorkedHourQText"), {
+        styleClass: bCompact ? "sapUiSizeCompact" : "",
+        actions: [MessageBox.Action.YES, MessageBox.Action.NO],
+        onClose: function(oAction) { 
+          if (oAction === MessageBox.Action.YES) {
+            this.deleteReportedHours(oHoursWorkedData);
+          }
+        }.bind(this)
+      });
+    },
+
+    deleteReportedHours: function (oHoursWorkedData) {
+      var oFormData = null;
+      var oComponent = this.getOwnerComponent();
+      var oResourceBundle = oComponent.getModel("i18n").getResourceBundle();
+      var oTimecardModel = oComponent.getModel("timecard");
+      var oSettingsModel = oComponent.getModel("settings");
+      var oMessageManager = sap.ui.getCore().getMessageManager();
+      var oMessageProcessor = new ControlMessageProcessor();
+
+      oMessageManager.registerMessageProcessor(oMessageProcessor);
+
+      oFormData = {
+        month: oTimecardModel.getProperty("/currentMonth"),
+        year: oTimecardModel.getProperty("/currentYear"),
+        taskLogId: oHoursWorkedData.taskLogId
+      };
+
+      oFormData = jQuery.extend(true, oFormData, helpers.getApiPostData(oSettingsModel));
+
+      oMessageManager.removeAllMessages();
+      this.getView().setBusy(true);
+
+      jQuery.ajax("/api/timecard", {
+        method: "DELETE",
+        data: oFormData,
+        success: function (oData) {
+          this.getView().setBusy(false);
+
+          oMessageManager.addMessages(new Message({
+            message: oResourceBundle.getText("deleteWorkHoursSuccessMessage"),
+            type: MessageType.Success,
+            processor: oMessageProcessor
+          }));
+
+          this.refreshReportTableData();
+          this.onMessagePopover();
+        }.bind(this),
+        error: function (oError) {
+          this.getView().setBusy(false);
+
+          oMessageManager.addMessages(new Message({
+            message: oResourceBundle.getText("deleteWorkHoursErrorMessage"),
+            type: MessageType.Error,
+            processor: oMessageProcessor
+          }));
+
+          oMessageManager.addMessages(new Message({
+            message: oError.responseText,
+            type: MessageType.Error,
+            processor: oMessageProcessor
+          }));
+
+          this.refreshReportTableData();
+          this.onMessagePopover();
+        }.bind(this)
+      });
     }
   });
 });

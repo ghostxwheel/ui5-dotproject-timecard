@@ -41,10 +41,22 @@ const helpers = {
     };
   },
 
-  getUserId: function (body) {
+  getUserId: function (body, res) {
     var $timecardPage = cheerio.load(body);
     var link = $timecardPage('a:contains(My Info)');
-    var userId = link.prop('href').split('&')[2].split('=')[1];
+    var userId = null;
+
+    if ( !link 
+      || !link.prop('href') 
+      || !link.prop('href').split('&') 
+      || link.prop('href').split('&').length < 3
+      || !link.prop('href').split('&')[2]
+      || !link.prop('href').split('&')[2].split('=')
+      || link.prop('href').split('&')[2].split('=') < 2) {
+      res.status(404).send("Failed to get user id");
+    } else {
+      userId = link.prop('href').split('&')[2].split('=')[1];
+    }
 
     return userId;
   }

@@ -14,7 +14,10 @@ const tasks = function (req, res) {
     if (err) {
       res.send([]);
     } else {
-      var userId = helpers.getUserId(body);
+      var userId = helpers.getUserId(body, res);
+      if (!userId) {
+        return;
+      }
 
       request.post(host + queries, {
         form: {

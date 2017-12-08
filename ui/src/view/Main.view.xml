@@ -8,7 +8,7 @@
   xmlns:mc="sap.suite.ui.microchart" 
   xmlns:u="sap.ui.unified" 
   xmlns:c="com.ui5.dotproject.timecard.control" controllerName="com.ui5.dotproject.timecard.controller.Main" displayBlock="true">
-  <Page id="idPageMain" showFooter="{timecard>/footerToolbarVisible}">
+  <Page id="idPageMain">
     <headerContent>
       <Bar>
         <contentLeft>
@@ -70,14 +70,33 @@
                     <Button tooltip="{i18n>refresh}" icon="sap-icon://refresh" press="onRefreshHoursWorkedTableData"/>
                   </Toolbar>
                 </headerToolbar>
+                <swipeContent>
+                  <Button
+                    visible="{= ${device>/support/touch} }"
+                    tooltip="{i18n>delete}"
+                    icon="sap-icon://delete"
+                    type="Reject"
+                    press="onDeleteReportedHoursSwipe" />
+                </swipeContent>
                 <items>
-                  <ColumnListItem type="Navigation">
+                  <ColumnListItem>
                     <cells>
                       <Text text="{timecard>status}"/>
                       <Text text="{timecard>date}"/>
                       <Text text="{timecard>timeBegin}"/>
                       <Text text="{timecard>timeEnd}"/>
                       <Text text="{timecard>hoursWorked}"/>
+                      <HBox>
+                        <Text 
+                          visible="{= ${device>/support/touch} }"
+                          text="" />
+                        <Button
+                          visible="{= !${device>/support/touch} }"
+                          tooltip="{i18n>delete}"
+                          icon="sap-icon://delete"
+                          type="Reject"
+                          press="onDeleteReportedHoursButton" />
+                      </HBox>
                     </cells>
                   </ColumnListItem>
                 </items>
@@ -97,6 +116,9 @@
                   <Column>
                     <Text text="{i18n>hoursWorked}"/>
                   </Column>
+                  <Column>
+                    <Text text=""/>
+                  </Column>
                 </columns>
               </Table>
             </content>
@@ -108,7 +130,7 @@
       <Toolbar>
         <Button id="idMessagePopoverButton" icon="sap-icon://message-popup" text="{= ${messages>/}.length }" type="Emphasized" press="onMessagePopover"/>
         <ToolbarSpacer/>
-        <Button text="{i18n>report}" width="100px" id="__button0" type="Accept" press="onReport"/>
+        <Button visible="{timecard>/footerToolbarVisible}" text="{i18n>report}" width="100px" id="__button0" type="Accept" press="onReport"/>
       </Toolbar>
     </footer>
   </Page>

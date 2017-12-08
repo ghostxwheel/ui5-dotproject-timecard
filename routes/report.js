@@ -15,7 +15,10 @@ const report = function (req, res) {
     if (err) {
       res.send([]);
     } else {
-      var userId = helpers.getUserId(body);
+      var userId = helpers.getUserId(body, res);
+      if (!userId) {
+        return;
+      }
 
       if (!req.body || !req.body.month || !req.body.year) {
         res.send([]);
