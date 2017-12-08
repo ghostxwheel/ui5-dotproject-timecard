@@ -444,6 +444,10 @@ sap.ui.define([
       
 			aSorters.push(new Sorter(sPath, bDescending));
 			oBinding.sort(aSorters);
+    },
+
+    onRefreshHoursWorkedTableData: function () {
+      this.refreshReportTableData();
     }
   });
 });

@@ -67,6 +67,7 @@
                     <Title text="{parts:['i18n>showReportedHoursTableTitle', 'timecard>/currentMonthDescription'], formatter: 'jQuery.sap.formatMessage'}"/>
                     <ToolbarSpacer/>
                     <Button tooltip="{i18n>viewSettings}" icon="sap-icon://drop-down-list" press="handleOpenViewSettingsDialog" />
+                    <Button tooltip="{i18n>refresh}" icon="sap-icon://refresh" press="onRefreshHoursWorkedTableData"/>
                   </Toolbar>
                 </headerToolbar>
                 <items>

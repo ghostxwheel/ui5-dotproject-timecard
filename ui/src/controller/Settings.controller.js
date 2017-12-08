@@ -14,6 +14,16 @@ sap.ui.define([
   return Controller.extend("com.ui5.dotproject.timecard.controller.Settings", {
     setInputCallback: null,
 
+    onInit: function () {
+      var oUrlTextView = this.getView().byId("__input0");
+
+      oUrlTextView.addEventDelegate({
+        onAfterRendering: function (oEvent) {
+          oEvent.srcControl.$().attr("dir", "ltr");
+        }
+      });
+    },
+
     onBack: function () {
       var oComponent = this.getOwnerComponent();
       var oRouter = oComponent.getRouter();
