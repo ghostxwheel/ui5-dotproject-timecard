@@ -60,7 +60,7 @@
                   <Button icon="sap-icon://less" tooltip="{i18n>subtract}" press="onSubtractMinimumHours"/>
                 </Toolbar>
               </HBox>
-              <Text width="100%" text="{i18n>workingHoursReportedTableWarning}" id="__title2" />
+              <Text width="100%" text="{i18n>workingHoursReportedTableWarning}" id="__title2" class="sapUiSmallMargin"/>
               <c:Calendar id="idCalendar" class="calendarWithoutDays" startDateChange="onCalendarChange"/>
               <Table id="idWorkingHoursReportedTable" items="{timecard>/hoursReported}">
                 <headerToolbar>
