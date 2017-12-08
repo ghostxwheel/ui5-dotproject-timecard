@@ -49,7 +49,7 @@
           <IconTabFilter id="__filter4" text="{i18n>showReportedHours}" key="showReportedHours">
             <content>
               <HBox>
-                <mc:ComparisonMicroChart size="L" scale="" class="sapUiSmallMargin removeMinHeight" press="press">
+                <mc:ComparisonMicroChart size="L" scale="" class="sapUiSmallMarginBeginEnd removeMinHeight" press="press">
                   <mc:data>
                     <mc:ComparisonMicroChartData title="{i18n>hoursMinimum}" value="{settings>/hoursMinimumCurrent}" color=""/>
                     <mc:ComparisonMicroChartData title="{i18n>hoursWorked}" value="{timecard>/hoursWorked}" color="{ parts: [ { path: 'settings>/hoursMinimum' }, { path: 'timecard>/hoursWorked' } ], formatter: '.formatter.formatHoursWorkedColor' }"/>
@@ -60,7 +60,7 @@
                   <Button icon="sap-icon://less" tooltip="{i18n>subtract}" press="onSubtractMinimumHours"/>
                 </Toolbar>
               </HBox>
-              <Text width="100%" text="{i18n>workingHoursReportedTableWarning}" id="__title2" class="sapUiSmallMargin"/>
+              <Text width="100%" text="{i18n>workingHoursReportedTableWarning}" id="__title2" class="sapUiSmallMarginBeginEnd"/>
               <c:Calendar id="idCalendar" class="calendarWithoutDays" startDateChange="onCalendarChange"/>
               <Table id="idWorkingHoursReportedTable" items="{timecard>/hoursReported}">
                 <headerToolbar>
