@@ -9,3 +9,6 @@
 .iconPadded {
     padding: 0.1rem;
 }
+.removeMinHeight {
+    min-height: auto !important;
+}

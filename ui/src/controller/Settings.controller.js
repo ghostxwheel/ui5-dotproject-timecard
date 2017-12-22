@@ -1,18 +1,30 @@
 sap.ui.define([
   "sap/ui/core/mvc/Controller",
   "sap/ui/core/routing/History",
-  "sap/m/MessageToast",
+  "sap/ui/core/message/Message",
+  "sap/ui/core/MessageType",
+  "sap/ui/core/message/ControlMessageProcessor",
   "sap/m/Dialog",
   "sap/ui/model/Filter",
   "sap/ui/model/FilterOperator",
   "com/ui5/dotproject/timecard/model/helpers",
   "com/ui5/dotproject/timecard/util/storage"
-], function (Controller, History, MessageToast, Dialog, Filter, FilterOperator, helpers, storage) {
+], function (Controller, History, Message, MessageType, ControlMessageProcessor, Dialog, Filter, FilterOperator, helpers, storage) {
   "use strict";
   return Controller.extend("com.ui5.dotproject.timecard.controller.Settings", {
     setInputCallback: null,
 
-    onBack: function (oEvent) {
+    onInit: function () {
+      var oUrlTextView = this.getView().byId("__input0");
+
+      oUrlTextView.addEventDelegate({
+        onAfterRendering: function (oEvent) {
+          oEvent.srcControl.$().attr("dir", "ltr");
+        }
+      });
+    },
+
+    onBack: function () {
       var oComponent = this.getOwnerComponent();
       var oRouter = oComponent.getRouter();
       var oHistory = History.getInstance();
@@ -25,15 +37,26 @@ sap.ui.define([
       }
     },
 
-    onSave: function (oEvent) {
+    onSave: function () {
       var oResourceBundle = this.getOwnerComponent().getModel("i18n").getResourceBundle();
-      
+      var oMessageManager = sap.ui.getCore().getMessageManager();
+      var oMessageProcessor = new ControlMessageProcessor();
+
+      oMessageManager.registerMessageProcessor(oMessageProcessor);
+      oMessageManager.removeAllMessages();
+
       storage.put(this.getOwnerComponent().getModel("settings"));
 
-      this.onBack(oEvent);
+      oMessageManager.addMessages(new Message({
+        message: oResourceBundle.getText("settingsSavedMessage"),
+        type: MessageType.Success,
+        processor: oMessageProcessor
+      }));
 
-      MessageToast.show(oResourceBundle.getText("settingsSavedMessage"), {
-        duration: 2000
+      this.onMessagePopover();
+
+      jQuery.sap.delayedCall(1000, this, function() {
+        this.onBack();
       });
     },
 
@@ -50,6 +73,8 @@ sap.ui.define([
         oView.addDependent(oDialog);
       }
 
+      // toggle compact style
+      jQuery.sap.syncStyleClass(this.getOwnerComponent().getContentDensityClass(), this.getView(), oDialog);
       oDialog.open();
     },
 
@@ -133,7 +158,7 @@ sap.ui.define([
 
           oModel.setProperty("/items", oData);
 
-          this.openValueHelpDialog(oSource, function(strValue, strValueId) {
+          this.openValueHelpDialog(oSource, function (strValue, strValueId) {
             oSettingsModel.setProperty(oSource.getBindingContext("settings").getPath() + "/company", strValue);
             oSettingsModel.setProperty(oSource.getBindingContext("settings").getPath() + "/companyId", strValueId);
           });
@@ -150,7 +175,7 @@ sap.ui.define([
 
       oModel.setProperty("/title", oResourceBundle.getText("valueHelpDialogProjectTitle"));
       oModel.setProperty("/noDataText", oResourceBundle.getText("valueHelpDialogProjectNoDataText"));
-      
+
       this.getView().setBusy(true);
 
       jQuery.ajax("/api/companies/" + strCompany + "/projects", {
@@ -161,7 +186,7 @@ sap.ui.define([
 
           oModel.setProperty("/items", oData);
 
-          this.openValueHelpDialog(oSource, function(strValue, strValueId) {
+          this.openValueHelpDialog(oSource, function (strValue, strValueId) {
             oSettingsModel.setProperty(oSource.getBindingContext("settings").getPath() + "/project", strValue);
             oSettingsModel.setProperty(oSource.getBindingContext("settings").getPath() + "/projectId", strValueId);
           });
@@ -179,7 +204,7 @@ sap.ui.define([
 
       oModel.setProperty("/title", oResourceBundle.getText("valueHelpDialogTaskTitle"));
       oModel.setProperty("/noDataText", oResourceBundle.getText("valueHelpDialogTaskNoDataText"));
-      
+
       this.getView().setBusy(true);
 
       jQuery.ajax("/api/companies/" + strCompany + "/projects/" + strProject + "/tasks", {
@@ -190,7 +215,7 @@ sap.ui.define([
 
           oModel.setProperty("/items", oData);
 
-          this.openValueHelpDialog(oSource, function(strValue, strValueId) {
+          this.openValueHelpDialog(oSource, function (strValue, strValueId) {
             oSettingsModel.setProperty(oSource.getBindingContext("settings").getPath() + "/task", strValue);
             oSettingsModel.setProperty(oSource.getBindingContext("settings").getPath() + "/taskId", strValueId);
           });
@@ -210,6 +235,7 @@ sap.ui.define([
         oView.addDependent(oDialog);
       }
 
+      jQuery.sap.syncStyleClass(this.getOwnerComponent().getContentDensityClass(), this.getView(), oDialog);
       oDialog.open();
       oDialog.getBinding("items").filter([]);
     },
@@ -229,6 +255,21 @@ sap.ui.define([
       }
 
       oEvent.getSource().getBinding("items").filter([]);
-    }
+    },
+
+    onMessagePopover: function () {
+      var oView = this.getView();
+      var oDialog = oView.byId("idMessagePopover");
+
+      if (!oDialog) {
+        oDialog = sap.ui.xmlfragment(oView.getId(), "com.ui5.dotproject.timecard.view.MessagePopover", this);
+
+        oView.addDependent(oDialog);
+      }
+
+      // toggle compact style
+      jQuery.sap.syncStyleClass(this.getOwnerComponent().getContentDensityClass(), this.getView(), oDialog);
+      oDialog.toggle(this.getView().byId("idMessagePopoverButton"));
+    },
   });
 });

@@ -14,7 +14,10 @@ const timecard = function (req, res) {
     if (err) {
       res.status(400).send("Remote server is down. HTTP status: " + httpResponse.statusCode);
     } else {
-      var userId = helpers.getUserId(body);
+      var userId = helpers.getUserId(body, res);
+      if (!userId) {
+        return;
+      }
 
       if (!req.body || !req.body.date || !req.body.timeBegin || !req.body.timeEnd || !req.body.description) {
         res.status(400).send("Form data is incomplete");
@@ -50,7 +53,14 @@ const timecard = function (req, res) {
             if (err) {
               res.send({ success: false });
             } else {
-              res.send({ success: true });
+              var $updateResponse = cheerio.load(body);
+              var errorOnPage = $updateResponse('font[color="RED"]');
+ 
+              if (errorOnPage && errorOnPage.text() !== "") {
+                res.status(400).send(errorOnPage.text());
+              } else {
+                res.send({ success: true });
+              }
             }
           });
         }

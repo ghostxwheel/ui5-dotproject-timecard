@@ -2,10 +2,12 @@ sap.ui.define([
   "sap/ui/core/UIComponent",
   "sap/ui/Device",
   "com/ui5/dotproject/timecard/model/models"
-], function(UIComponent, Device, models) {
+], function (UIComponent, Device, models) {
   "use strict";
 
   return UIComponent.extend("com.ui5.dotproject.timecard.Component", {
+    
+    _sContentDensityClass: null,
 
     metadata: {
       manifest: "json"
@@ -16,7 +18,7 @@ sap.ui.define([
      * @public
      * @override
      */
-    init: function() {
+    init: function () {
       // call the base component's init function
       UIComponent.prototype.init.apply(this, arguments);
 
@@ -26,9 +28,20 @@ sap.ui.define([
       this.setModel(models.createAddStatusDialogModel(), "addStatusDialog");
       this.setModel(models.createValueHelpDialogModel(), "valueHelpDialog");
       this.setModel(sap.ui.getCore().getMessageManager().getMessageModel(), "messages");
-      
+
       // initialize router
       this.getRouter().initialize();
+    },
+
+    getContentDensityClass: function () {
+      if (!this._sContentDensityClass) {
+        if (!sap.ui.Device.support.touch) {
+          this._sContentDensityClass = "sapUiSizeCompact";
+        } else {
+          this._sContentDensityClass = "sapUiSizeCozy";
+        }
+      }
+      return this._sContentDensityClass;
     }
   });
 });

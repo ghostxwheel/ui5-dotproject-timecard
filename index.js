@@ -10,6 +10,7 @@ const companies = require('./routes/companies');
 const projects = require('./routes/projects');
 const tasks = require('./routes/tasks');
 const timecard = require('./routes/timecard');
+const timecardDelete = require('./routes/timecardDelete');
 const report = require('./routes/report');
 const stats = require('./routes/stats');
 
@@ -37,6 +38,7 @@ app.post('/api/companies', companies);
 app.post('/api/companies/:company/projects', projects);
 app.post('/api/companies/:company/projects/:project/tasks', tasks);
 app.post('/api/timecard', timecard);
+app.delete('/api/timecard', timecardDelete);
 app.post('/api/report', report);
 app.post('/api/stats', stats);
 

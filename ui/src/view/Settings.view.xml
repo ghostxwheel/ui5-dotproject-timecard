@@ -22,7 +22,7 @@
             <form:content>
               <Text text="{i18n>ConnectionWarning}" id="__title1_copy" class="textWarning"/>
               <Label text="{i18n>url}" id="__label2"/>
-              <Input width="100%" id="__input0" value="{settings>/fullUrl}" required="true"/>
+              <TextArea width="100%" id="__input0" value="{settings>/fullUrl}" required="true" />
             </form:content>
           </form:SimpleForm>
           <form:SimpleForm editable="true" layout="ResponsiveGridLayout" id="__form0" title="{i18n>LoginSettings}">
