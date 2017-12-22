@@ -48,7 +48,9 @@ const report = function (req, res) {
 
                 if (oRow.children.length <= 4
                   || oRow.children.length > 12
-                  || oRow.children[0].name === "th") {
+                  || oRow.children[0].name === "th"
+                  || !oRow.children[8].firstChild.attribs
+                  || !oRow.children[9].firstChild.attribs) {
                   return;
                 }
 
