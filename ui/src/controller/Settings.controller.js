@@ -22,6 +22,24 @@ sap.ui.define([
           oEvent.srcControl.$().attr("dir", "ltr");
         }
       });
+
+      this.loadSettingROModel();
+    },
+
+    loadSettingROModel: function() {
+      var oComponent = this.getOwnerComponent();
+      var oSettingsModel = this.getOwnerComponent().getModel("settings");
+      var oSettingsModelRO = this.getOwnerComponent().getModel("settingsReadOnly");
+
+      jQuery.ajax("/api/commonTasks", {
+        method: "POST",
+        data: helpers.getApiPostData(oSettingsModel),
+        success: function (arrCommonTaskStatuses) {
+          oSettingsModelRO.setProperty("/commonTaskStatuses", arrCommonTaskStatuses);
+        }.bind(this),
+        error: function() {
+        }.bind(this)
+      });
     },
 
     onBack: function () {

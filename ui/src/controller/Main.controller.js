@@ -28,6 +28,7 @@ sap.ui.define([
 
       this.removeCalendarEventHandlers();
       this.loginCheck();
+      this.loadStatuses();
       this.refreshReportTableData(function () {
         if (oHoursTableSettings) {
           var oDialog = this.getViewSettingsDialog();
@@ -44,6 +45,38 @@ sap.ui.define([
             }
           });
         }
+      });
+    },
+
+    loadStatuses: function () {
+      var oComponent = this.getOwnerComponent();
+      var oResourceBundle = oComponent.getModel("i18n").getResourceBundle();
+      var oSettingsModel = oComponent.getModel("settings");
+      var oSettingsModelRO = oComponent.getModel("settingsReadOnly");
+      var arrStatuses = oSettingsModel.getProperty("/statuses");
+      var arrCommonTaskStatuses = oSettingsModelRO.getProperty("/commonTaskStatuses");
+
+      this.getView().setBusy(true);
+
+      jQuery.ajax("/api/commonTasks", {
+        method: "POST",
+        data: helpers.getApiPostData(oSettingsModel),
+        success: function (arrCommonTaskStatuses) {
+          arrCommonTaskStatuses.forEach(function(oStatus){
+            oStatus.type = oResourceBundle.getText("commonTask");
+          });
+    
+          arrStatuses.map(function(oStatus){
+            oStatus.type = "";
+          });
+    
+          oSettingsModelRO.setProperty("/statuses", arrCommonTaskStatuses.concat(arrStatuses));
+
+          this.getView().setBusy(false);
+        }.bind(this),
+        error: function() {
+          this.getView().setBusy(false);
+        }.bind(this)
       });
     },
     
@@ -86,6 +119,7 @@ sap.ui.define([
       var oComponent = this.getOwnerComponent();
       var oTimecardModel = oComponent.getModel("timecard");
       var oSettingsModel = oComponent.getModel("settings");
+      var oSettingsModelRO = oComponent.getModel("settingsReadOnly");
       var oPostData = helpers.getApiPostData(oSettingsModel);
       
       this.refreshReportStatsData();
@@ -101,16 +135,29 @@ sap.ui.define([
           data: oPostData,
           success: function (oArrData) {
             this.getView().setBusy(false);
-            var arrStatuses = oSettingsModel.getProperty("/statuses");
+            var arrStatuses = oSettingsModelRO.getProperty("/statuses");
+            var bReadOnly = false;
 
             var arrHoursReported = oArrData.map(function (oArrData) {
               var oAdditionalData = {};
               var arrFilteredStatus = arrStatuses.filter(function (oStatus) {
-                return (parseInt(oStatus.companyId) === oArrData.companyId
-                  && parseInt(oStatus.projectId) === oArrData.projectId
-                  && parseInt(oStatus.taskId) === oArrData.taskId
-                  && oStatus.description === oArrData.description);
+
+                if (oArrData.companyId && oArrData.projectId && oArrData.taskId) {
+                  return (parseInt(oStatus.companyId) === oArrData.companyId
+                    && parseInt(oStatus.projectId) === oArrData.projectId
+                    && parseInt(oStatus.taskId) === oArrData.taskId
+                    && oStatus.description === oArrData.description);
+                } else {
+                  return ((oStatus.company === oArrData.company || oStatus.company.indexOf(oArrData.company) !== -1)
+                    && (oStatus.project === oArrData.project || oStatus.project.indexOf(oArrData.project) !== -1)
+                    && (oStatus.task === oArrData.task || oStatus.task.indexOf(oArrData.task) !== -1)
+                    && oStatus.description === oArrData.description);
+                }
               });
+
+              if (!oArrData.taskLogId || oArrData.taskLogId === "") {
+                bReadOnly = true;
+              }
 
               if (arrFilteredStatus.length > 0) {
                 oAdditionalData.status = arrFilteredStatus[0].title;
@@ -122,6 +169,7 @@ sap.ui.define([
             });
 
             oTimecardModel.setProperty("/hoursReported", arrHoursReported);
+            oTimecardModel.setProperty("/readOnly", bReadOnly);
 
             if (fnCallback) {
               fnCallback.apply(this, []);
@@ -192,6 +240,7 @@ sap.ui.define([
       var oComponent = this.getOwnerComponent();
       var oResourceBundle = oComponent.getModel("i18n").getResourceBundle();
       var oTimecardModel = oComponent.getModel("timecard");
+      var oSettingsModel = oComponent.getModel("settings");
       var arrMessages = [];
       var oMessageManager = sap.ui.getCore().getMessageManager();
       var oMessageProcessor = new ControlMessageProcessor();
@@ -214,7 +263,7 @@ sap.ui.define([
         });
       }
 
-      if (oTimecardModel.getProperty("/timeBegin") === "") {
+      if (oSettingsModel.getProperty("/timeBegin") === "") {
         arrMessages.push({
           message: oResourceBundle.getText("timeBeginMandatoryError"),
           type: MessageType.Error,
@@ -222,7 +271,7 @@ sap.ui.define([
         });
       }
 
-      if (oTimecardModel.getProperty("/timeEnd") === "") {
+      if (oSettingsModel.getProperty("/timeEnd") === "") {
         arrMessages.push({
           message: oResourceBundle.getText("timeEndMandatoryError"),
           type: MessageType.Error,
@@ -246,7 +295,7 @@ sap.ui.define([
     onReport: function (oEvent) {
       var oComponent, oTimecardModel, oSettingsModel, oResourceBundle,
         strSelectedStatusId, arrStatuses, oStatus, oFormData,
-        oMessageManager, oMessageProcessor;
+        oMessageManager, oMessageProcessor, oSettingsModelRO;
 
       if (!this.validateInput()) {
         this.onMessagePopover();
@@ -257,9 +306,10 @@ sap.ui.define([
       oComponent = this.getOwnerComponent();
       oTimecardModel = oComponent.getModel("timecard");
       oSettingsModel = oComponent.getModel("settings");
+      oSettingsModelRO = oComponent.getModel("settingsReadOnly");
       oResourceBundle = oComponent.getModel("i18n").getResourceBundle();
       strSelectedStatusId = oTimecardModel.getProperty("/statusId");
-      arrStatuses = oSettingsModel.getProperty("/statuses");
+      arrStatuses = oSettingsModelRO.getProperty("/statuses");
       oStatus = null;
       oFormData = null;
       oMessageManager = sap.ui.getCore().getMessageManager();
@@ -273,8 +323,8 @@ sap.ui.define([
 
       oFormData = {
         date: oTimecardModel.getProperty("/date"),
-        timeBegin: oTimecardModel.getProperty("/timeBegin"),
-        timeEnd: oTimecardModel.getProperty("/timeEnd"),
+        timeBegin: oSettingsModel.getProperty("/timeBegin"),
+        timeEnd: oSettingsModel.getProperty("/timeEnd"),
         taskId: oStatus.taskId,
         description: oStatus.description
       };
@@ -298,6 +348,9 @@ sap.ui.define([
 
           this.refreshReportTableData();
           this.onMessagePopover();
+
+          oSettingsModel.setProperty("/defaultStatusId", oStatus.statusId);
+          storage.put(oSettingsModel);
         }.bind(this),
         error: function (oError) {
           this.getView().setBusy(false);

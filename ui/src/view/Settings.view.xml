@@ -63,6 +63,33 @@
               </CustomListItem>
             </items>
           </List>
+          <List noDataText="{i18n>NoStatusedDefined}" items="{settingsReadOnly>/commonTaskStatuses}">
+            <headerToolbar>
+              <Toolbar width="100%">
+                <content>
+                  <Title text="{i18n>CommonTaskStatuses}" width="100%"/>
+                </content>
+              </Toolbar>
+            </headerToolbar>
+            <items>
+              <CustomListItem type="Active">
+                <content>
+                  <form:SimpleForm editable="true" layout="ResponsiveGridLayout" title="{settingsReadOnly>title}">
+                    <form:content>
+                      <Label text="{i18n>company}" />
+                      <Text width="100%" text="{settingsReadOnly>company}" />
+                      <Label text="{i18n>project}" />
+                      <Text width="100%" text="{settingsReadOnly>project}" />
+                      <Label text="{i18n>task}" />
+                      <Text width="100%" text="{settingsReadOnly>task}" />
+                      <Label text="{i18n>description}" />
+                      <Text width="100%" text="{settingsReadOnly>description}"/>
+                    </form:content>
+                  </form:SimpleForm>
+                </content>
+              </CustomListItem>
+            </items>
+          </List>
           <Text id="idTextLast"/>
         </content>
       </Panel>

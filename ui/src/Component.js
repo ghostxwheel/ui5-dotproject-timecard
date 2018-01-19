@@ -25,6 +25,7 @@ sap.ui.define([
       this.setModel(models.createDeviceModel(), "device");
       this.setModel(models.createTimecardModel(this), "timecard");
       this.setModel(models.createSettingsModel(), "settings");
+      this.setModel(models.createSettingsReadOnlyModel(), "settingsReadOnly");
       this.setModel(models.createAddStatusDialogModel(), "addStatusDialog");
       this.setModel(models.createValueHelpDialogModel(), "valueHelpDialog");
       this.setModel(sap.ui.getCore().getMessageManager().getMessageModel(), "messages");

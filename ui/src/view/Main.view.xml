@@ -31,24 +31,24 @@
                 <f:content>
                   <Text text="{i18n>timecardWarning}" id="__title1"/>
                   <Label text="{i18n>status}" id="__label1"/>
-                  <ComboBox id="__box0" items="{settings>/statuses}" required="true" selectedKey="{timecard>/statusId}">
+                  <ComboBox id="__box0" items="{path: 'settingsReadOnly>/statuses', sorter: { path: 'type', descending: true }}" required="true" selectedKey="{timecard>/statusId}" showSecondaryValues="true">
                     <items>
-                      <core:ListItem text="{settings>title}" key="{settings>statusId}"/>
+                      <core:ListItem text="{settingsReadOnly>title}" key="{settingsReadOnly>statusId}" additionalText="{settingsReadOnly>type}"/>
                     </items>
                   </ComboBox>
                   <Label text="{i18n>date}" width="100%" id="__label2"/>
                   <DatePicker width="100%" id="__input2" required="true" valueFormat="dd/MM/YYYY" displayFormat="dd/MM/YYYY" value="{timecard>/date}"/>
                   <Label text="{i18n>startTime}" width="100%" id="__label3"/>
-                  <TimePicker width="100%" id="__input3" valueFormat="HH:mm" displayFormat="HH:mm" required="true" value="{timecard>/timeBegin}"/>
+                  <TimePicker width="100%" id="__input3" valueFormat="HH:mm" displayFormat="HH:mm" required="true" value="{settings>/timeBegin}"/>
                   <Label text="{i18n>endTime}" width="100%" id="__label5"/>
-                  <TimePicker width="100%" id="__input5" valueFormat="HH:mm" displayFormat="HH:mm" required="true" value="{timecard>/timeEnd}"/>
+                  <TimePicker width="100%" id="__input5" valueFormat="HH:mm" displayFormat="HH:mm" required="true" value="{settings>/timeEnd}"/>
                 </f:content>
               </f:SimpleForm>
             </content>
           </IconTabFilter>
           <IconTabFilter id="__filter4" text="{i18n>showReportedHours}" key="showReportedHours">
             <content>
-              <HBox>
+              <HBox class="sapUiSmallMarginTop">
                 <mc:ComparisonMicroChart size="L" scale="" class="sapUiSmallMarginBeginEnd removeMinHeight" press="press">
                   <mc:data>
                     <mc:ComparisonMicroChartData title="{i18n>hoursMinimum}" value="{settings>/hoursMinimumCurrent}" color=""/>
@@ -73,7 +73,7 @@
                 </headerToolbar>
                 <swipeContent>
                   <Button
-                    visible="{= ${device>/support/touch} }"
+                    visible="{= ${device>/support/touch} &amp;&amp; !${timecard>/readOnly} }"
                     tooltip="{i18n>delete}"
                     icon="sap-icon://delete"
                     type="Reject"
@@ -87,7 +87,7 @@
                       <Text text="{timecard>timeBegin}"/>
                       <Text text="{timecard>timeEnd}"/>
                       <Text text="{timecard>hoursWorked}"/>
-                      <HBox>
+                      <HBox visible="{= !${timecard>/readOnly} }">
                         <Text 
                           visible="{= ${device>/support/touch} }"
                           text="" />

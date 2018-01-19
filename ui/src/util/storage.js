@@ -46,6 +46,14 @@ sap.ui.define([
         if (oSettings.hoursTableSettings) {
           oModel.setProperty("/hoursTableSettings", oSettings.hoursTableSettings);
         }
+        
+        if (oSettings.timeBegin) {
+          oModel.setProperty("/timeBegin", oSettings.timeBegin);
+        }
+        
+        if (oSettings.timeEnd) {
+          oModel.setProperty("/timeEnd", oSettings.timeEnd);
+        }
       }
     }
   };

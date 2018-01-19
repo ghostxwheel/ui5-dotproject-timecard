@@ -22,6 +22,7 @@ sap.ui.define([
       });
 
       var oModel = new JSONModel({
+        readOnly: false,
         footerToolbarVisible: true,
         currentMonthDescription: oResourceBundle.getText("month" + new Date().getMonth()),
         currentMonth: new Date().getMonth() + 1,
@@ -32,9 +33,7 @@ sap.ui.define([
         loginStatusIconColor: "yellow",
         loginStatusIconTooltip: oResourceBundle.getText("loginStatusWarningTooltip"),
         statusId: 0,
-        date: oDateFormatter.format(oDateNow),
-        timeBegin: "08:00",
-        timeEnd: "17:30"  
+        date: oDateFormatter.format(oDateNow)
       });
 
       return oModel;
@@ -50,10 +49,20 @@ sap.ui.define([
         username: "",
         password: "",
         statuses: [],
-        defaultStatusId: 0
+        defaultStatusId: 0,
+        timeBegin: "08:00",
+        timeEnd: "17:30"
       });
       
       storage.pull(oModel);
+
+      return oModel;
+    },
+
+    createSettingsReadOnlyModel: function(oSettingsModel) {
+      var oModel = new JSONModel({
+        commonTaskStatuses: []
+      });
 
       return oModel;
     },

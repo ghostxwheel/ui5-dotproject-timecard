@@ -13,6 +13,7 @@ const timecard = require('./routes/timecard');
 const timecardDelete = require('./routes/timecardDelete');
 const report = require('./routes/report');
 const stats = require('./routes/stats');
+const commonTasks = require('./routes/commonTasks');
 
 const app = express();
 
@@ -41,6 +42,7 @@ app.post('/api/timecard', timecard);
 app.delete('/api/timecard', timecardDelete);
 app.post('/api/report', report);
 app.post('/api/stats', stats);
+app.post('/api/commonTasks', commonTasks);
 
 // enable directory listening
 app.use('/', serveIndex(ui5Resources));

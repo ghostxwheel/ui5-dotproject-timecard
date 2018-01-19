@@ -49,13 +49,15 @@ const report = function (req, res) {
 
               } else {
 
-                if (oRow.children.length <= 4
-                  || oRow.children.length > 12
-                  || oRow.children[0].name === "th"
-                  || !oRow.children[8].firstChild.attribs
-                  || !oRow.children[9].firstChild.attribs) {
+                var arrLogDataCells = oRow.children.filter(function (oChild) { 
+                  return oChild.attribs.id === "log_data";
+                });
+
+                if (arrLogDataCells.length === 0) {
                   return;
                 }
+
+                debugger;
 
                 var reportedOn = oRow.children[0].firstChild.data;
                 var company = oRow.children[1].firstChild.data;
@@ -65,10 +67,18 @@ const report = function (req, res) {
                 var timeBegin = oRow.children[5].firstChild.firstChild.data;
                 var timeEnd = oRow.children[6].firstChild.data;
                 var hoursWorked = oRow.children[7].firstChild.data;
-                var taskLogId = /javascript:delete_row\(([0-9]*)\)/
-                  .exec(oRow.children[8].firstChild.attribs["href"])[1];
-                var arrParam = /javascript:edit_row\("",([0-9]*),([0-9]*),"(.*)",([0-9]*),"(.*)",([0-9]*),"(.*)","([0-9\/]*)","([0-9\:]*)","([0-9\:]*)",([0-9\.]*),"(.*)"\)/
-                  .exec(oRow.children[9].firstChild.attribs["href"]);
+                var taskLogId = "";
+                var arrParam = "";
+
+                if (oRow.children[8].firstChild && oRow.children[8].firstChild.attribs) {
+                  taskLogId = /javascript:delete_row\(([0-9]*)\)/
+                    .exec(oRow.children[8].firstChild.attribs["href"])[1];
+                }
+
+                if (oRow.children[9].firstChild && oRow.children[9].firstChild.attribs) {
+                  arrParam = /javascript:edit_row\("",([0-9]*),([0-9]*),"(.*)",([0-9]*),"(.*)",([0-9]*),"(.*)","([0-9\/]*)","([0-9\:]*)","([0-9\:]*)",([0-9\.]*),"(.*)"\)/
+                    .exec(oRow.children[9].firstChild.attribs["href"]);
+                }
 
                 oStatus.reportedOn = reportedOn;
                 oStatus.company = company;

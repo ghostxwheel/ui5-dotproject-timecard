@@ -41,7 +41,7 @@ const login = function (redirect, req, res, callback) {
       request.post(host + index, {
         form: {
           login: csrfToken,
-          redirect: strRedirect,
+          redirect: "",
           username: username,
           password: password
         }
@@ -60,8 +60,10 @@ const login = function (redirect, req, res, callback) {
             err = undefined;
           }
         }
-    
-        callback(err, httpResponse, body);
+        
+        request.get(host + index + "?" + strRedirect, { }, function (err, httpResponse, body) {
+          callback(err, httpResponse, body);
+        });
       });
     }
   });
