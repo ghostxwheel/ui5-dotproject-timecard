@@ -230,9 +230,6 @@ sap.ui.define([
         success: function (strStyle) {
           $("<style type='text/css'>" + strStyle + "</style>").appendTo("head");
 
-          oCalendar.removeAllSpecialDates();
-          oCalendarLegend.removeAllItems();
-
           for (var nDay = 1; nDay <= nNumberOfDayInSelectedMonth; nDay++) {
             oDay = new Date(oFirstDayOfSelectedMonth.getFullYear(), oFirstDayOfSelectedMonth.getMonth(), nDay);
 
@@ -538,6 +535,11 @@ sap.ui.define([
       var oResourceBundle = oComponent.getModel("i18n").getResourceBundle();
       var oTimecardModel = oComponent.getModel("timecard");
       var oDate = oEvent.getSource().getStartDate();
+      var oCalendar = this.getView().byId("idCalendar");
+      var oCalendarLegend = this.getView().byId("idCalendarLegend");
+
+      oCalendar.removeAllSpecialDates();
+      oCalendarLegend.removeAllItems();
 
       oTimecardModel.setProperty("/currentMonthDescription",
         oResourceBundle.getText("month" + oDate.getMonth()));
