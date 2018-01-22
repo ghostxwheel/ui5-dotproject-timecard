@@ -8,8 +8,25 @@ sap.ui.define([
   "com/ui5/dotproject/timecard/util/formatter",
   "com/ui5/dotproject/timecard/util/storage",
   "sap/ui/model/Sorter",
-  "sap/m/MessageBox"
-], function (Controller, helpers, MessageToast, ControlMessageProcessor, Message, MessageType, formatter, storage, Sorter, MessageBox) {
+  "sap/m/MessageBox",
+  "sap/ui/unified/CalendarLegendItem",
+  "sap/ui/unified/DateTypeRange",
+  "sap/ui/unified/CalendarDayType"
+], function (
+  Controller, 
+  helpers, 
+  MessageToast, 
+  ControlMessageProcessor,
+  Message, 
+  MessageType, 
+  formatter, 
+  storage, 
+  Sorter, 
+  MessageBox, 
+  CalendarLegendItem, 
+  DateTypeRange,
+  CalendarDayType
+) {
   "use strict";
 
   return Controller.extend("com.ui5.dotproject.timecard.controller.Main", {
@@ -28,27 +45,28 @@ sap.ui.define([
 
       this.removeCalendarEventHandlers();
       this.loginCheck();
-      this.loadStatuses();
-      this.refreshReportTableData(function () {
-        if (oHoursTableSettings) {
-          var oDialog = this.getViewSettingsDialog();
+      this.loadStatuses(function() {
+        this.refreshReportTableData(function () {
+          if (oHoursTableSettings) {
+            var oDialog = this.getViewSettingsDialog();
 
-          this.sortHoursTable(oHoursTableSettings.path, oHoursTableSettings.descending);
+            this.sortHoursTable(oHoursTableSettings.path, oHoursTableSettings.descending);
 
-          oDialog.setSortDescending(oHoursTableSettings.descending);
-          oDialog.getSortItems().forEach(function (oSortItem) {
-            if (oSortItem.getKey() === oHoursTableSettings.path) {
-              oSortItem.setSelected(true);
-              oDialog.setSelectedSortItem(oSortItem);
-            } else if (oSortItem.getSelected() === true) {
-              oSortItem.setSelected(false);
-            }
-          });
-        }
-      });
+            oDialog.setSortDescending(oHoursTableSettings.descending);
+            oDialog.getSortItems().forEach(function (oSortItem) {
+              if (oSortItem.getKey() === oHoursTableSettings.path) {
+                oSortItem.setSelected(true);
+                oDialog.setSelectedSortItem(oSortItem);
+              } else if (oSortItem.getSelected() === true) {
+                oSortItem.setSelected(false);
+              }
+            });
+          }
+        });
+      }.bind(this));
     },
 
-    loadStatuses: function () {
+    loadStatuses: function (fnCallback) {
       var oComponent = this.getOwnerComponent();
       var oResourceBundle = oComponent.getModel("i18n").getResourceBundle();
       var oSettingsModel = oComponent.getModel("settings");
@@ -73,6 +91,10 @@ sap.ui.define([
           oSettingsModelRO.setProperty("/statuses", arrCommonTaskStatuses.concat(arrStatuses));
 
           this.getView().setBusy(false);
+          
+          if (fnCallback) {
+            fnCallback.apply(this, []);
+          }
         }.bind(this),
         error: function() {
           this.getView().setBusy(false);
@@ -171,6 +193,9 @@ sap.ui.define([
             oTimecardModel.setProperty("/hoursReported", arrHoursReported);
             oTimecardModel.setProperty("/readOnly", bReadOnly);
 
+            // Set calendar special dates
+            this.setCalendarSpecialDates(oPostData.year, oPostData.month, arrHoursReported);
+
             if (fnCallback) {
               fnCallback.apply(this, []);
             }
@@ -188,6 +213,78 @@ sap.ui.define([
           }.bind(this)
         });
       }
+    },
+
+    setCalendarSpecialDates: function(strYear, strMonth, arrHoursReported) {
+      var oResourceBundle = this.getOwnerComponent().getModel("i18n").getResourceBundle();
+      var oFirstDayOfSelectedMonth = new Date(parseInt(strYear, 10), parseInt(strMonth, 10) - 1, 1);
+      var nNumberOfDayInSelectedMonth = helpers.getDaysInMonth(oFirstDayOfSelectedMonth);
+      var oCalendar = this.getView().byId("idCalendar");
+      var oCalendarLegend = this.getView().byId("idCalendarLegend");
+      var oDay = null;
+      var nHoursWorkedTotalForDay = null;
+      var arrFoundDays = null;
+
+      jQuery.ajax(jQuery.sap.getModulePath("com.ui5.dotproject.timecard", "/css/calendarStyle.css"),{
+        async: false,
+        success: function (strStyle) {
+          $("<style type='text/css'>" + strStyle + "</style>").appendTo("head");
+
+          oCalendar.removeAllSpecialDates();
+          oCalendarLegend.removeAllItems();
+
+          for (var nDay = 1; nDay <= nNumberOfDayInSelectedMonth; nDay++) {
+            oDay = new Date(oFirstDayOfSelectedMonth.getFullYear(), oFirstDayOfSelectedMonth.getMonth(), nDay);
+
+            if (oDay.getDay() === 5 || oDay.getDay() === 6) {
+              continue;
+            }
+
+            arrFoundDays = arrHoursReported.filter(function (oHoursReported) {
+              return helpers.parseDate(oHoursReported.date).getTime() === oDay.getTime();
+            });
+
+            if (arrFoundDays.length === 0) {
+              oCalendar.addSpecialDate(new DateTypeRange({
+                startDate: oDay,
+                type: CalendarDayType.Type01
+              }));
+            } else {
+              nHoursWorkedTotalForDay = arrFoundDays.reduce(function(nAcc, oCurr) {
+                return nAcc + parseFloat(oCurr.hoursWorked);
+              }, 0);
+
+              if (nHoursWorkedTotalForDay < 9) {
+                oCalendar.addSpecialDate(new DateTypeRange({
+                  startDate: oDay,
+                  type: CalendarDayType.Type02
+                }));
+              } else {
+                oCalendar.addSpecialDate(new DateTypeRange({
+                  startDate: oDay,
+                  type: CalendarDayType.Type03
+                }));
+              }
+            }
+          }
+
+          oCalendarLegend.addItem(new CalendarLegendItem({
+            text: oResourceBundle.getText("notReportHours"),
+            type: CalendarDayType.Type01
+          }));
+
+          oCalendarLegend.addItem(new CalendarLegendItem({
+            text: oResourceBundle.getText("partiallyReportedHours"),
+            type: CalendarDayType.Type02
+          }));
+
+          oCalendarLegend.addItem(new CalendarLegendItem({
+            text: oResourceBundle.getText("fullyReportedHours"),
+            type: CalendarDayType.Type03
+          }));
+
+        }.bind(this)
+      });
     },
 
     loginCheck: function () {
@@ -216,11 +313,11 @@ sap.ui.define([
       var oCalHead = sap.ui.getCore().byId(oCalendar.getId() + "--Head");
       var oCalMonth = sap.ui.getCore().byId(oCalendar.getId() + "--Month0");
 
-      oCalMonth.addEventDelegate({
-        onAfterRendering: function (oEvent) {
-          oEvent.srcControl.$().css("display", "none");
-        }
-      });
+      //oCalMonth.addEventDelegate({
+      //  onAfterRendering: function (oEvent) {
+      //    oEvent.srcControl.$().css("display", "none");
+      //  }
+      //});
 
       var oListener = oCalHead.mEventRegistry["pressButton1"][0];
       oCalHead.detachPressButton1(oListener.fFunction, oListener.oListener);

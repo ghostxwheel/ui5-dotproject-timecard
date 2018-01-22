@@ -1,0 +1,67 @@
+.sapUiCalItemType01>.sapUiCalItemText {
+  box-shadow: inset 0 -6.25rem 0 #bb0000 !important;
+  color: #ffffff !important;
+}
+
+.sapUiCalItemType01.sapUiCalItemSel>.sapUiCalItemText {
+  box-shadow: inset 0 -6.25rem 0 #bb0000,inset 0 -0.33rem #ffffff !important;
+  color: #ffffff !important;
+}
+
+.sapUiCalItemType01.sapUiCalItemNow>.sapUiCalItemText {
+  box-shadow: inset 0 -6.25rem 0 #bb0000,inset 0 -0.33rem #ffffff !important;
+  color: #ffffff !important;
+}
+
+.sapUiCalItemType01.sapUiCalItemSel.sapUiCalItemNow>.sapUiCalItemText {
+  box-shadow: inset 0 -6.25rem 0 #bb0000,inset 0 -0.33rem #ffffff !important;
+  color: #ffffff !important;
+}
+
+.sapUiCalLegDayType01>.sapUiUnifiedLegendSquare>.sapUiUnifiedLegendSquareColor {
+  background: #bb0000 !important;
+}
+
+.sapUiCalItemType02>.sapUiCalItemText {
+  box-shadow: inset 0 -6.25rem 0 #e78c07 !important;
+}
+
+.sapUiCalItemType02.sapUiCalItemSel>.sapUiCalItemText {
+  box-shadow: inset 0 -6.25rem 0 #e78c07,inset 0 -0.33rem #ffffff !important;
+}
+
+.sapUiCalItemType02.sapUiCalItemNow>.sapUiCalItemText {
+  box-shadow: inset 0 -6.25rem 0 #e78c07,inset 0 -0.33rem #ffffff !important;
+}
+
+.sapUiCalItemType02.sapUiCalItemSel.sapUiCalItemNow>.sapUiCalItemText {
+  box-shadow: inset 0 -6.25rem 0 #e78c07,inset 0 -0.33rem #ffffff !important;
+}
+
+.sapUiCalLegDayType02>.sapUiUnifiedLegendSquare>.sapUiUnifiedLegendSquareColor {
+  background: #e78c07 !important;
+}
+
+.sapUiCalItemType03>.sapUiCalItemText {
+  box-shadow: inset 0 -6.25rem 0 #2b7d2b !important;
+  color: #ffffff !important;
+}
+
+.sapUiCalItemType03.sapUiCalItemSel>.sapUiCalItemText {
+  box-shadow: inset 0 -6.25rem 0 #2b7d2b,inset 0 -0.33rem #ffffff !important;
+  color: #ffffff !important;
+}
+
+.sapUiCalItemType03.sapUiCalItemNow>.sapUiCalItemText {
+  box-shadow: inset 0 -6.25rem 0 #2b7d2b,inset 0 -0.33rem #ffffff !important;
+  color: #ffffff !important;
+}
+
+.sapUiCalItemType03.sapUiCalItemSel.sapUiCalItemNow>.sapUiCalItemText {
+  box-shadow: inset 0 -6.25rem 0 #2b7d2b,inset 0 -0.33rem #ffffff !important;
+  color: #ffffff !important;
+}
+
+.sapUiCalLegDayType03>.sapUiUnifiedLegendSquare>.sapUiUnifiedLegendSquareColor {
+  background: #2b7d2b !important;
+}

@@ -61,7 +61,8 @@
                 </Toolbar>
               </HBox>
               <Text width="100%" text="{i18n>workingHoursReportedTableWarning}" id="__title2" class="sapUiSmallMarginBeginEnd"/>
-              <c:Calendar id="idCalendar" class="calendarWithoutDays" startDateChange="onCalendarChange"/>
+              <c:Calendar id="idCalendar" class="calendarWithoutDays" startDateChange="onCalendarChange" legend="idCalendarLegend"/>
+              <u:CalendarLegend id="idCalendarLegend" />
               <Table id="idWorkingHoursReportedTable" items="{timecard>/hoursReported}">
                 <headerToolbar>
                   <Toolbar>

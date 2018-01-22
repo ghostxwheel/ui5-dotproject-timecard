@@ -41,10 +41,10 @@ const stats = function (req, res) {
             var hoursWorkedTotal = 0;
             var arrReports = [];
             var $reportResponse = cheerio.load(body);
-            var arrRows = $reportResponse('table td strong').get();
+            var arrRows = $reportResponse('font > strong').get();
 
-            if (arrRows[1]) {
-              hoursWorkedTotal = parseFloat(arrRows[1].firstChild.data.split(' ')[1]);
+            if (arrRows) {
+              hoursWorkedTotal = parseFloat(arrRows[arrRows.length - 1].firstChild.data.split(' ')[1]);
             }
 
             res.send({
