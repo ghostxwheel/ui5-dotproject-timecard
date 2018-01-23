@@ -224,12 +224,11 @@ sap.ui.define([
       var oDay = null;
       var nHoursWorkedTotalForDay = null;
       var arrFoundDays = null;
-
-      jQuery.ajax(jQuery.sap.getModulePath("com.ui5.dotproject.timecard", "/css/calendarStyle.css"),{
-        async: false,
-        success: function (strStyle) {
-          $("<style type='text/css'>" + strStyle + "</style>").appendTo("head");
-
+	    
+      oCalendar.removeAllSpecialDates();
+      oCalendarLegend.removeAllItems();
+      
+      var setSpecialDates = function () {
           for (var nDay = 1; nDay <= nNumberOfDayInSelectedMonth; nDay++) {
             oDay = new Date(oFirstDayOfSelectedMonth.getFullYear(), oFirstDayOfSelectedMonth.getMonth(), nDay);
 
@@ -244,6 +243,7 @@ sap.ui.define([
             if (arrFoundDays.length === 0) {
               oCalendar.addSpecialDate(new DateTypeRange({
                 startDate: oDay,
+
                 type: CalendarDayType.Type01
               }));
             } else {
@@ -279,9 +279,20 @@ sap.ui.define([
             text: oResourceBundle.getText("fullyReportedHours"),
             type: CalendarDayType.Type03
           }));
-
-        }.bind(this)
-      });
+        };
+	    
+      if (jQuery("#idCalendarStyle").length) {
+	setSpecialDates();
+      } else {
+        jQuery.ajax(jQuery.sap.getModulePath("com.ui5.dotproject.timecard", "/css/calendarStyle.css"),{
+          async: true,
+          success: function (strStyle) {
+            $("<style id='idCalendarStyle' type='text/css'>" + strStyle + "</style>").appendTo("head");
+            
+            setSpecialDates();
+	  }.bind(this)
+	});
+      }
     },
 
     loginCheck: function () {
