@@ -3,7 +3,6 @@
   xmlns:mvc="sap.ui.core.mvc" 
   xmlns="sap.m" 
   xmlns:l="sap.ui.layout" 
-  xmlns:f="sap.ui.layout.form" 
   xmlns:core="sap.ui.core" 
   xmlns:mc="sap.suite.ui.microchart" 
   xmlns:u="sap.ui.unified" 
@@ -23,110 +22,90 @@
       </Bar>
     </headerContent>
     <content>
-      <IconTabBar selectedKey="__xmlview0--__filter4" id="__bar2" expandable="false" backgroundDesign="Translucent" select="onTabSelect">
+      <FlexBox
+				alignItems="Start"
+				justifyContent="SpaceBetween"
+        direction="{timecard>/flexBoxDirection}">
+				<items>
+          <VBox class="sapUiSmallMarginBeginEnd sapUiSmallMarginTop calendarTransparent">
+            <c:Calendar id="idCalendar" class="calendarWithoutDays calendarTransparent" select="onReportViaCalendar" startDateChange="onCalendarChange" legend="idCalendarLegend"/>
+            <u:CalendarLegend id="idCalendarLegend" />
+          </VBox>
+          <HBox class="sapUiSmallMarginBeginEnd sapUiSmallMarginTop">
+            <mc:ComparisonMicroChart size="L" scale="" class="sapUiSmallMarginBeginEnd removeMinHeight" press="press">
+              <mc:data>
+                <mc:ComparisonMicroChartData title="{i18n>hoursMinimum}" value="{settings>/hoursMinimumCurrent}" color=""/>
+                <mc:ComparisonMicroChartData title="{i18n>hoursWorked}" value="{timecard>/hoursWorked}" color="{ parts: [ { path: 'settings>/hoursMinimum' }, { path: 'timecard>/hoursWorked' } ], formatter: '.formatter.formatHoursWorkedColor' }"/>
+              </mc:data>
+            </mc:ComparisonMicroChart>
+            <Toolbar class="toolbarNoFooterLine">
+              <Button icon="sap-icon://add" tooltip="{i18n>add}" press="onAddMinimumHours"/>
+              <Button icon="sap-icon://less" tooltip="{i18n>subtract}" press="onSubtractMinimumHours"/>
+            </Toolbar>
+          </HBox>
+				</items>
+			</FlexBox>
+      <Text width="100%" text="{i18n>workingHoursReportedTableWarning}" id="__title2" class="sapUiSmallMarginBeginEnd"/>
+      <Table id="idWorkingHoursReportedTable" items="{timecard>/hoursReported}">
+        <headerToolbar>
+          <Toolbar>
+            <Title text="{parts:['i18n>showReportedHoursTableTitle', 'timecard>/currentMonthDescription'], formatter: 'jQuery.sap.formatMessage'}"/>
+            <ToolbarSpacer/>
+            <Button tooltip="{i18n>viewSettings}" icon="sap-icon://drop-down-list" press="handleOpenViewSettingsDialog" />
+            <Button tooltip="{i18n>refresh}" icon="sap-icon://refresh" press="onRefreshHoursWorkedTableData"/>
+          </Toolbar>
+        </headerToolbar>
+        <swipeContent>
+          <Button
+            visible="{= ${device>/support/touch} &amp;&amp; !${timecard>/readOnly} }"
+            tooltip="{i18n>delete}"
+            icon="sap-icon://delete"
+            type="Reject"
+            press="onDeleteReportedHoursSwipe" />
+        </swipeContent>
         <items>
-          <IconTabFilter text="{i18n>reportWorkHours}" id="__filter3" key="reportWorkHours">
-            <content>
-              <f:SimpleForm editable="true" layout="ResponsiveGridLayout" id="__form0">
-                <f:content>
-                  <Text text="{i18n>timecardWarning}" id="__title1"/>
-                  <Label text="{i18n>status}" id="__label1"/>
-                  <ComboBox id="__box0" items="{path: 'settingsReadOnly>/statuses', sorter: { path: 'type', descending: true }}" required="true" selectedKey="{timecard>/statusId}" showSecondaryValues="true">
-                    <items>
-                      <core:ListItem text="{settingsReadOnly>title}" key="{settingsReadOnly>statusId}" additionalText="{settingsReadOnly>type}"/>
-                    </items>
-                  </ComboBox>
-                  <Label text="{i18n>date}" width="100%" id="__label2"/>
-                  <DatePicker width="100%" id="__input2" required="true" valueFormat="dd/MM/YYYY" displayFormat="dd/MM/YYYY" value="{timecard>/date}"/>
-                  <Label text="{i18n>startTime}" width="100%" id="__label3"/>
-                  <TimePicker width="100%" id="__input3" valueFormat="HH:mm" displayFormat="HH:mm" required="true" value="{settings>/timeBegin}"/>
-                  <Label text="{i18n>endTime}" width="100%" id="__label5"/>
-                  <TimePicker width="100%" id="__input5" valueFormat="HH:mm" displayFormat="HH:mm" required="true" value="{settings>/timeEnd}"/>
-                </f:content>
-              </f:SimpleForm>
-            </content>
-          </IconTabFilter>
-          <IconTabFilter id="__filter4" text="{i18n>showReportedHours}" key="showReportedHours">
-            <content>
-              <HBox class="sapUiSmallMarginTop">
-                <mc:ComparisonMicroChart size="L" scale="" class="sapUiSmallMarginBeginEnd removeMinHeight" press="press">
-                  <mc:data>
-                    <mc:ComparisonMicroChartData title="{i18n>hoursMinimum}" value="{settings>/hoursMinimumCurrent}" color=""/>
-                    <mc:ComparisonMicroChartData title="{i18n>hoursWorked}" value="{timecard>/hoursWorked}" color="{ parts: [ { path: 'settings>/hoursMinimum' }, { path: 'timecard>/hoursWorked' } ], formatter: '.formatter.formatHoursWorkedColor' }"/>
-                  </mc:data>
-                </mc:ComparisonMicroChart>
-                <Toolbar class="toolbarNoFooterLine">
-                  <Button icon="sap-icon://add" tooltip="{i18n>add}" press="onAddMinimumHours"/>
-                  <Button icon="sap-icon://less" tooltip="{i18n>subtract}" press="onSubtractMinimumHours"/>
-                </Toolbar>
+          <ColumnListItem>
+            <cells>
+              <Text text="{timecard>status}"/>
+              <Text text="{timecard>date}"/>
+              <Text text="{timecard>timeBegin}"/>
+              <Text text="{timecard>timeEnd}"/>
+              <Text text="{timecard>hoursWorked}"/>
+              <HBox visible="{= !${timecard>/readOnly} }">
+                <Text 
+                  visible="{= ${device>/support/touch} }"
+                  text="" />
+                <Button
+                  visible="{= !${device>/support/touch} }"
+                  tooltip="{i18n>delete}"
+                  icon="sap-icon://delete"
+                  type="Reject"
+                  press="onDeleteReportedHoursButton" />
               </HBox>
-              <Text width="100%" text="{i18n>workingHoursReportedTableWarning}" id="__title2" class="sapUiSmallMarginBeginEnd"/>
-              <c:Calendar id="idCalendar" class="calendarWithoutDays" startDateChange="onCalendarChange" legend="idCalendarLegend"/>
-              <u:CalendarLegend id="idCalendarLegend" />
-              <Table id="idWorkingHoursReportedTable" items="{timecard>/hoursReported}">
-                <headerToolbar>
-                  <Toolbar>
-                    <Title text="{parts:['i18n>showReportedHoursTableTitle', 'timecard>/currentMonthDescription'], formatter: 'jQuery.sap.formatMessage'}"/>
-                    <ToolbarSpacer/>
-                    <Button tooltip="{i18n>viewSettings}" icon="sap-icon://drop-down-list" press="handleOpenViewSettingsDialog" />
-                    <Button tooltip="{i18n>refresh}" icon="sap-icon://refresh" press="onRefreshHoursWorkedTableData"/>
-                  </Toolbar>
-                </headerToolbar>
-                <swipeContent>
-                  <Button
-                    visible="{= ${device>/support/touch} &amp;&amp; !${timecard>/readOnly} }"
-                    tooltip="{i18n>delete}"
-                    icon="sap-icon://delete"
-                    type="Reject"
-                    press="onDeleteReportedHoursSwipe" />
-                </swipeContent>
-                <items>
-                  <ColumnListItem>
-                    <cells>
-                      <Text text="{timecard>status}"/>
-                      <Text text="{timecard>date}"/>
-                      <Text text="{timecard>timeBegin}"/>
-                      <Text text="{timecard>timeEnd}"/>
-                      <Text text="{timecard>hoursWorked}"/>
-                      <HBox visible="{= !${timecard>/readOnly} }">
-                        <Text 
-                          visible="{= ${device>/support/touch} }"
-                          text="" />
-                        <Button
-                          visible="{= !${device>/support/touch} }"
-                          tooltip="{i18n>delete}"
-                          icon="sap-icon://delete"
-                          type="Reject"
-                          press="onDeleteReportedHoursButton" />
-                      </HBox>
-                    </cells>
-                  </ColumnListItem>
-                </items>
-                <columns>
-                  <Column>
-                    <Text text="{i18n>status}"/>
-                  </Column>
-                  <Column width="5rem">
-                    <Text text="{i18n>date}"/>
-                  </Column>
-                  <Column>
-                    <Text text="{i18n>startTime}"/>
-                  </Column>
-                  <Column>
-                    <Text text="{i18n>endTime}"/>
-                  </Column>
-                  <Column>
-                    <Text text="{i18n>hoursWorked}"/>
-                  </Column>
-                  <Column>
-                    <Text text=""/>
-                  </Column>
-                </columns>
-              </Table>
-            </content>
-          </IconTabFilter>
+            </cells>
+          </ColumnListItem>
         </items>
-      </IconTabBar>
+        <columns>
+          <Column>
+            <Text text="{i18n>status}"/>
+          </Column>
+          <Column width="5rem">
+            <Text text="{i18n>date}"/>
+          </Column>
+          <Column>
+            <Text text="{i18n>startTime}"/>
+          </Column>
+          <Column>
+            <Text text="{i18n>endTime}"/>
+          </Column>
+          <Column>
+            <Text text="{i18n>hoursWorked}"/>
+          </Column>
+          <Column>
+            <Text text=""/>
+          </Column>
+        </columns>
+      </Table>
     </content>
     <footer>
       <Toolbar>
