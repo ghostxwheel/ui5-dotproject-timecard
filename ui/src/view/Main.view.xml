@@ -25,10 +25,11 @@
       <FlexBox
 				alignItems="Start"
 				justifyContent="SpaceBetween"
-        direction="{timecard>/flexBoxDirection}">
+        direction="{timecard>/flexBoxDirection}"
+        backgroundDesign="Solid">
 				<items>
-          <VBox class="sapUiSmallMarginBeginEnd sapUiSmallMarginTop calendarTransparent">
-            <c:Calendar id="idCalendar" class="calendarWithoutDays calendarTransparent" select="onReportViaCalendar" startDateChange="onCalendarChange" legend="idCalendarLegend"/>
+          <VBox class="sapUiSmallMarginBeginEnd sapUiSmallMarginTop">
+            <c:Calendar id="idCalendar" select="onReportViaCalendar" startDateChange="onCalendarChange" legend="idCalendarLegend"/>
             <u:CalendarLegend id="idCalendarLegend" />
           </VBox>
           <HBox class="sapUiSmallMarginBeginEnd sapUiSmallMarginTop">
