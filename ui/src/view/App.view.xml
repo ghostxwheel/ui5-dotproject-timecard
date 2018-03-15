@@ -1,4 +1,8 @@
 <mvc:View xmlns:html="http://www.w3.org/1999/xhtml" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m"
 	controllerName="com.ui5.dotproject.timecard.controller.App" displayBlock="true">
-	<App id="idApp"/>
+  <Shell>
+    <app>
+	    <App id="idApp"/>
+    </app>
+  </Shell>
 </mvc:View>

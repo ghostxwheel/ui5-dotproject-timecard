@@ -10,33 +10,53 @@
     id="sap-ui-bootstrap" 
     src="https://sapui5.hana.ondemand.com/resources/sap-ui-core.js" 
     data-sap-ui-language="HE"
-    data-sap-ui-libs="sap.m"
     data-sap-ui-theme="sap_belize" 
     data-sap-ui-compatVersion="edge"
+    data-sap-ui-preload="async"
     data-sap-ui-resourceroots='{"com.ui5.dotproject.timecard": "./dist"}'>
   </script>
 
   <script>
     sap.ui.getCore().attachInit(function () {
-      new sap.m.Shell({
-        app: new sap.ui.core.ComponentContainer({
+      sap.ui.require([
+        "jquery.sap.global",
+        "sap/ui/core/ComponentContainer"
+      ], function (JQuery, ComponentContainer) {
+        new ComponentContainer({
           height: "100%",
-          name: "com.ui5.dotproject.timecard"
-        }),
-        homeIcon: {
-          'phone': '/dist/Icon-App-57x57@1x.png',
-          'phone@2': '/dist/Icon-App-57x57@2x.png',
-          'tablet': '/dist/Icon-App-72x72@1x.png',
-          'tablet@2': '/dist/Icon-App-72x72@2x.png',
-          'favicon': '/dist/favicon.ico',
-          'precomposed': true
-        }
-      }).placeAt("content");
+				  manifest: true,
+          name: "com.ui5.dotproject.timecard",
+          componentCreated: function(oParams) {
+            JQuery(".loader").remove();
+          }
+        }).placeAt("content");
+      });
     });
   </script>
+
+  <style>
+    .loader {
+      border: 16px solid #f3f3f3; /* Light grey */
+      border-top: 16px solid #3498db; /* Blue */
+      border-radius: 50%;
+      width: 120px;
+      height: 120px;
+      animation: spin 2s linear infinite;
+      position: absolute;
+      left: calc(50% - 60px);
+      top: calc(50% - 60px);
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
+  
 </head>
 
 <body class="sapUiBody" id="content">
+  <div class="loader"></div>
 </body>
 
 </html>

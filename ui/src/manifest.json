@@ -18,11 +18,11 @@
     "technology": "UI5",
     "icons": {
       "icon": "",
-      "favIcon": "",
-      "phone": "",
-      "phone@2": "",
-      "tablet": "",
-      "tablet@2": ""
+      "favIcon": "/dist/favicon.ico",
+      "phone": "/dist/Icon-App-57x57@1x.png",
+      "phone@2": "/dist/Icon-App-57x57@2x.png",
+      "tablet": "/dist/Icon-App-72x72@1x.png",
+      "tablet@2": "/dist/Icon-App-72x72@2x.png"
     },
     "deviceTypes": {
       "desktop": true,
