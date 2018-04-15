@@ -3,3 +3,4 @@ ui/resources/
 ssl/
 .vscode/
 node_modules/
+telegramBotKey.js
