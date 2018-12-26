@@ -388,6 +388,13 @@ sap.ui.define([
       var oView = this.getView();
       var oDialog = oView.byId("idMessagePopover");
 
+      var oMessageManager = sap.ui.getCore().getMessageManager();
+      var aMessages = oMessageManager.getMessageModel().getData();
+
+      if (aMessages.length === 0) {
+        return;
+      }
+
       if (!oDialog) {
         oDialog = sap.ui.xmlfragment(oView.getId(), "com.ui5.dotproject.timecard.view.MessagePopover", this);
 
