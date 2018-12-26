@@ -1,7 +1,8 @@
 sap.ui.define([
   "sap/ui/core/UIComponent",
   "sap/ui/Device",
-  "com/ui5/dotproject/timecard/model/models"
+  "com/ui5/dotproject/timecard/model/models",
+  "com/ui5/dotproject/timecard/model/polyfills"
 ], function (UIComponent, Device, models) {
   "use strict";
 
@@ -24,6 +25,7 @@ sap.ui.define([
 
       this.setModel(models.createDeviceModel(), "device");
       this.setModel(models.createTimecardModel(this), "timecard");
+      this.setModel(models.createMassReportModel(), "massreport");
       this.setModel(models.createSettingsModel(), "settings");
       this.setModel(models.createSettingsReadOnlyModel(), "settingsReadOnly");
       this.setModel(models.createAddStatusDialogModel(), "addStatusDialog");

@@ -83,6 +83,14 @@ sap.ui.define([
       });
 
       return oModel;
+    },
+
+    createMassReportModel: function () {
+      var oModel = new JSONModel({
+        reportHours: []
+      });
+
+      return oModel;
     }
 
   };

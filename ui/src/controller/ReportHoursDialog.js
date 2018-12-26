@@ -34,59 +34,7 @@ sap.ui.define([
     },
 
     validateInput: function () {
-      var oComponent = this.getOwnerComponent();
-      var oResourceBundle = oComponent.getModel("i18n").getResourceBundle();
-      var oTimecardModel = oComponent.getModel("timecard");
-      var oSettingsModel = oComponent.getModel("settings");
-      var arrMessages = [];
-      var oMessageManager = sap.ui.getCore().getMessageManager();
-      var oMessageProcessor = new ControlMessageProcessor();
-
-      oMessageManager.registerMessageProcessor(oMessageProcessor);
-
-      if (oTimecardModel.getProperty("/statusId") === 0) {
-        arrMessages.push({
-          message: oResourceBundle.getText("statusMandatoryError"),
-          type: MessageType.Error,
-          processor: oMessageProcessor
-        });
-      }
-
-      if (oTimecardModel.getProperty("/date") === "") {
-        arrMessages.push({
-          message: oResourceBundle.getText("dateMandatoryError"),
-          type: MessageType.Error,
-          processor: oMessageProcessor
-        });
-      }
-
-      if (oSettingsModel.getProperty("/timeBegin") === "") {
-        arrMessages.push({
-          message: oResourceBundle.getText("timeBeginMandatoryError"),
-          type: MessageType.Error,
-          processor: oMessageProcessor
-        });
-      }
-
-      if (oSettingsModel.getProperty("/timeEnd") === "") {
-        arrMessages.push({
-          message: oResourceBundle.getText("timeEndMandatoryError"),
-          type: MessageType.Error,
-          processor: oMessageProcessor
-        });
-      }
-
-      if (arrMessages.length === 0) {
-        return true;
-      } else {
-        oMessageManager.removeAllMessages();
-
-        arrMessages.forEach(function (oMessage) {
-          oMessageManager.addMessages(new Message(oMessage));
-        });
-
-        return false;
-      }
+      return helpers.reportValidateInput(this);
     },
 
     onReport: function () {

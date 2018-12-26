@@ -1,0 +1,64 @@
+<mvc:View 
+  xmlns:html="http://www.w3.org/1999/xhtml" 
+  xmlns:mvc="sap.ui.core.mvc" 
+  xmlns="sap.m" 
+  xmlns:l="sap.ui.layout" 
+  xmlns:core="sap.ui.core" 
+  xmlns:mc="sap.suite.ui.microchart" 
+  xmlns:u="sap.ui.unified" 
+  xmlns:c="com.ui5.dotproject.timecard.control" controllerName="com.ui5.dotproject.timecard.controller.MassReport" displayBlock="true">
+  <Page id="idPageMain">
+    <headerContent>
+      <Bar>
+        <contentLeft>
+          <Button id="idButtonBack" icon="sap-icon://nav-back" tooltip="{i18n>back}" press="onBack"/>
+        </contentLeft>
+        <contentMiddle>
+          <Title text="{i18n>massReport}"/>
+        </contentMiddle>
+        <contentRight>
+          <core:Icon src="{timecard>/loginStatusIcon}" color="{timecard>/loginStatusIconColor}" tooltip="{timecard>/loginStatusIconTooltip}"/>
+        </contentRight>
+      </Bar>
+    </headerContent>
+    <content>
+      <Table items="{massreport>/reportHours}">
+        <items>
+          <ColumnListItem>
+            <cells>
+              <ComboBox editable="{massreport>editable}" items="{path: 'settingsReadOnly>/statuses', sorter: { path: 'type', descending: true }}" required="true" selectedKey="{massreport>status}" showSecondaryValues="true">
+                <items>
+                  <core:ListItem text="{settingsReadOnly>title}" key="{settingsReadOnly>statusId}" additionalText="{settingsReadOnly>type}"/>
+                </items>
+              </ComboBox>
+              <DatePicker editable="false" valueFormat="dd/MM/YYYY" displayFormat="dd/MM/YYYY" value="{massreport>date}"/>
+              <TimePicker editable="{massreport>editable}" valueFormat="HH:mm" displayFormat="HH:mm" required="true" value="{massreport>timeBegin}"/>
+              <TimePicker editable="{massreport>editable}" valueFormat="HH:mm" displayFormat="HH:mm" required="true" value="{massreport>timeEnd}"/>
+            </cells>
+          </ColumnListItem>
+        </items>
+        <columns>
+          <Column>
+            <Text text="{i18n>status}"/>
+          </Column>
+          <Column>
+            <Text text="{i18n>date}"/>
+          </Column>
+          <Column>
+            <Text text="{i18n>startTime}"/>
+          </Column>
+          <Column>
+            <Text text="{i18n>endTime}"/>
+          </Column>
+        </columns>
+      </Table>
+    </content>
+    <footer>
+      <Toolbar>
+        <Button id="idMessagePopoverButton" icon="sap-icon://message-popup" text="{= ${messages>/}.length }" type="Emphasized" press="onMessagePopover"/>
+        <ToolbarSpacer/>
+        <Button visible="{timecard>/footerToolbarVisible}" text="{i18n>send}" width="100px" id="__button0" type="Accept" press="onSend"/>
+      </Toolbar>
+    </footer>
+  </Page>
+</mvc:View>

@@ -84,6 +84,16 @@
           "controlAggregation": "pages",
           "title": "",
           "viewPath": "com.ui5.dotproject.timecard.view"
+        },
+        "massreport": {
+          "viewType": "XML",
+          "transition": "slide",
+          "clearAggregation": true,
+          "viewName": "MassReport",
+          "controlId": "idApp",
+          "controlAggregation": "pages",
+          "title": "",
+          "viewPath": "com.ui5.dotproject.timecard.view"
         }
       },
       "routes": [{
@@ -98,6 +108,12 @@
         "titleTarget": "",
         "greedy": false,
         "target": ["settings"]
+      }, {
+        "name": "massreport",
+        "pattern": "massreport",
+        "titleTarget": "",
+        "greedy": false,
+        "target": ["massreport"]
       }],
       "config": {
       	"routerClass": "sap.m.routing.Router",

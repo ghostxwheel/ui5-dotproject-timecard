@@ -54,26 +54,40 @@ sap.ui.define([
       this.removeCalendarEventHandlers();
       this.loginCheck();
       this.loadStatuses(function() {
-        this.refreshReportTableData(function () {
-          if (oHoursTableSettings) {
-            var oDialog = this.getViewSettingsDialog();
-
-            this.sortHoursTable(oHoursTableSettings.path, oHoursTableSettings.descending);
-
-            oDialog.setSortDescending(oHoursTableSettings.descending);
-            oDialog.getSortItems().forEach(function (oSortItem) {
-              if (oSortItem.getKey() === oHoursTableSettings.path) {
-                oSortItem.setSelected(true);
-                oDialog.setSelectedSortItem(oSortItem);
-              } else if (oSortItem.getSelected() === true) {
-                oSortItem.setSelected(false);
-              }
-            });
-          }
-        });
+        this.refreshReportTableData(this.refreshReportTableDataSorter);
       }.bind(this));
 
       this.reportHoursDialog = new ReportHoursDialog(this.getView());
+
+      var oRouter = this.getOwnerComponent().getRouter();
+			oRouter.getRoute("main").attachPatternMatched(this.onPatternMatched, this);
+    },
+
+    onPatternMatched: function () {
+      this.refreshReportTableData(this.refreshReportTableDataSorter);
+      this.onMessagePopover();
+    },
+
+    refreshReportTableDataSorter: function () {
+      var oComponent = this.getOwnerComponent();
+      var oSettingsModel = oComponent.getModel("settings");
+      var oHoursTableSettings = oSettingsModel.getProperty("/hoursTableSettings");
+
+      if (oHoursTableSettings) {
+        var oDialog = this.getViewSettingsDialog();
+
+        this.sortHoursTable(oHoursTableSettings.path, oHoursTableSettings.descending);
+
+        oDialog.setSortDescending(oHoursTableSettings.descending);
+        oDialog.getSortItems().forEach(function (oSortItem) {
+          if (oSortItem.getKey() === oHoursTableSettings.path) {
+            oSortItem.setSelected(true);
+            oDialog.setSelectedSortItem(oSortItem);
+          } else if (oSortItem.getSelected() === true) {
+            oSortItem.setSelected(false);
+          }
+        });
+      }
     },
 
     loadStatuses: function (fnCallback) {
@@ -192,7 +206,8 @@ sap.ui.define([
               }
 
               if (arrFilteredStatus.length > 0) {
-                oAdditionalData.status = arrFilteredStatus[0].title;
+                oAdditionalData.status   = arrFilteredStatus[0].title;
+                oAdditionalData.statusId = arrFilteredStatus[0].statusId;
               }
 
               oArrData.hoursWorked = parseFloat(parseFloat(oArrData.hoursWorked).toFixed(2));
@@ -591,6 +606,12 @@ sap.ui.define([
           this.onMessagePopover();
         }.bind(this)
       });
+    },
+
+    onMassReport: function () {
+      var oComponent = this.getOwnerComponent().getRouter();
+      
+      oComponent.navTo("massreport");
     }
   });
 });
