@@ -175,6 +175,7 @@ sap.ui.define([
         oFormData = jQuery.extend(true, oFormData, helpers.getApiPostData(oSettingsModel));
 
         aAjaxRequests.push({
+          method: "POST",
           url:'/api/timecard', 
           data: oFormData, 
           success: ajaxSuccess.bind(this),
