@@ -4,7 +4,6 @@ var ui5preload = require('gulp-ui5-preload');
 var uglify = require('gulp-uglify');
 var prettydata = require('gulp-pretty-data');
 var gulpif = require('gulp-if');
-var gulpSequence = require('gulp-sequence');
 var clean = require('gulp-clean');
 var nodemon = require('gulp-nodemon');
 
@@ -26,7 +25,7 @@ gulp.task('copy', function () {
     .pipe(gulp.dest('ui/dist'));
 });
 
-gulp.task('build', gulpSequence('ui5preload', 'copy'));
+gulp.task('build', gulp.series('ui5preload', 'copy'));
 
 gulp.task('nodemon', function () {
   nodemon({
