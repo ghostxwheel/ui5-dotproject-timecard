@@ -1,24 +1,30 @@
 <core:FragmentDefinition 
   xmlns="sap.m" 
   xmlns:core="sap.ui.core" 
-  xmlns:f="sap.ui.layout.form">
+  xmlns:f="sap.ui.layout.form"
+  xmlns:c="com.ui5.dotproject.timecard.control">
   <Dialog id="reportHoursDialog" title="{i18n>reportWorkHours}" stretch="{device>/support/touch}">
     <content>
       <f:SimpleForm editable="true" layout="ResponsiveGridLayout">
         <f:content>
           <Text text="{i18n>timecardWarning}" />
+
           <Label text="{i18n>status}" />
           <ComboBox items="{path: 'settingsReadOnly>/statuses', sorter: { path: 'type', descending: true }}" required="true" selectedKey="{timecard>/statusId}" showSecondaryValues="true">
             <items>
               <core:ListItem text="{settingsReadOnly>title}" key="{settingsReadOnly>statusId}" additionalText="{settingsReadOnly>type}"/>
             </items>
           </ComboBox>
+
           <Label text="{i18n>date}" width="100%"/>
           <DatePicker width="100%" required="true" valueFormat="dd/MM/YYYY" displayFormat="dd/MM/YYYY" value="{timecard>/date}"/>
+
           <Label text="{i18n>startTime}" width="100%"/>
           <TimePicker width="100%" valueFormat="HH:mm" displayFormat="HH:mm" required="true" value="{settings>/timeBegin}"/>
+
           <Label text="{i18n>endTime}" width="100%"/>
           <TimePicker width="100%" valueFormat="HH:mm" displayFormat="HH:mm" required="true" value="{settings>/timeEnd}"/>
+
         </f:content>
       </f:SimpleForm>
     </content>

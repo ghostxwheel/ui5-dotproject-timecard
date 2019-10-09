@@ -6,7 +6,9 @@
   xmlns:core="sap.ui.core" 
   xmlns:mc="sap.suite.ui.microchart" 
   xmlns:u="sap.ui.unified" 
-  xmlns:c="com.ui5.dotproject.timecard.control" controllerName="com.ui5.dotproject.timecard.controller.Main" displayBlock="true">
+  xmlns:c="com.ui5.dotproject.timecard.control" 
+  controllerName="com.ui5.dotproject.timecard.controller.Main" 
+  displayBlock="true">
   <Page id="idPageMain">
     <headerContent>
       <Bar>
