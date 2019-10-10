@@ -6,7 +6,9 @@
   xmlns:core="sap.ui.core" 
   xmlns:mc="sap.suite.ui.microchart" 
   xmlns:u="sap.ui.unified" 
-  xmlns:c="com.ui5.dotproject.timecard.control" controllerName="com.ui5.dotproject.timecard.controller.MassReport" displayBlock="true">
+  xmlns:c="com.ui5.dotproject.timecard.control" 
+  controllerName="com.ui5.dotproject.timecard.controller.MassReport" 
+  displayBlock="true">
   <Page id="idPageMain">
     <headerContent>
       <Bar>
@@ -32,8 +34,8 @@
                 </items>
               </ComboBox>
               <DatePicker editable="false" valueFormat="dd/MM/YYYY" displayFormat="dd/MM/YYYY" value="{massreport>date}"/>
-              <TimePicker editable="{massreport>editable}" valueFormat="HH:mm" displayFormat="HH:mm" required="true" value="{massreport>timeBegin}"/>
-              <TimePicker editable="{massreport>editable}" valueFormat="HH:mm" displayFormat="HH:mm" required="true" value="{massreport>timeEnd}"/>
+              <c:TimePicker editable="{massreport>editable}" valueFormat="HH:mm" displayFormat="HH:mm" required="true" value="{massreport>timeBegin}"/>
+              <c:TimePicker editable="{massreport>editable}" valueFormat="HH:mm" displayFormat="HH:mm" required="true" value="{massreport>timeEnd}"/>
             </cells>
           </ColumnListItem>
         </items>

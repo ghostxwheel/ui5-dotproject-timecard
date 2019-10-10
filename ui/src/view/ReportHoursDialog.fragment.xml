@@ -20,10 +20,10 @@
           <DatePicker width="100%" required="true" valueFormat="dd/MM/YYYY" displayFormat="dd/MM/YYYY" value="{timecard>/date}"/>
 
           <Label text="{i18n>startTime}" width="100%"/>
-          <TimePicker width="100%" valueFormat="HH:mm" displayFormat="HH:mm" required="true" value="{settings>/timeBegin}"/>
-
+          <c:TimePicker width="100%" valueFormat="HH:mm" displayFormat="HH:mm" required="true" value="{settings>/timeBegin}"/>
+ 
           <Label text="{i18n>endTime}" width="100%"/>
-          <TimePicker width="100%" valueFormat="HH:mm" displayFormat="HH:mm" required="true" value="{settings>/timeEnd}"/>
+          <c:TimePicker width="100%" valueFormat="HH:mm" displayFormat="HH:mm" required="true" value="{settings>/timeEnd}"/>
 
         </f:content>
       </f:SimpleForm>
