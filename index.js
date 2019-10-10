@@ -14,7 +14,6 @@ const timecardDelete = require('./routes/timecardDelete');
 const report = require('./routes/report');
 const stats = require('./routes/stats');
 const commonTasks = require('./routes/commonTasks');
-const telegram = require('./helpers/telegram');
 
 const app = express();
 
