@@ -9,11 +9,7 @@ sap.ui.define([
     "use strict";
 
     var CTimePicker = TimePicker.extend("com.ui5.dotproject.timecard.control.TimePicker", /** @lends com.ui5.dotproject.timecard.control.TimePicker.prototype */ {
-      renderer: {},
-      
-      onAfterRendering: function () {
-        this._$input.attr("type", "tel");
-      }
+      renderer: {}
     });
 
 		EnabledPropagator.call(CTimePicker.prototype, true);
@@ -29,6 +25,13 @@ sap.ui.define([
       }
 			return this;
 		};
+
+		CTimePicker.prototype.onAfterRendering = function() {
+      if (TimePicker.prototype.onAfterRendering) {
+        TimePicker.prototype.onAfterRendering.apply(this, arguments);
+      }
+      this._$input.attr("type", "tel");
+    };
 
     return CTimePicker;
   });
