@@ -92,7 +92,7 @@
           <Column>
             <Text text="{i18n>status}"/>
           </Column>
-          <Column width="5rem">
+          <Column width="5.5rem">
             <Text text="{i18n>date}"/>
           </Column>
           <Column>
