@@ -21,7 +21,7 @@ gulp.task('ui5preload', function () {
 });
 
 gulp.task('copy', function () {
-  return gulp.src(['ui/src/**/**.+(css|png|ico|json)'])
+  return gulp.src(['ui/src/**/**.+(css|png|ico|json|js|xml|properties)'])
     .pipe(gulp.dest('ui/dist'));
 });
 

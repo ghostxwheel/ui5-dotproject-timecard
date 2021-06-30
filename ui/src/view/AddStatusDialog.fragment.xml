@@ -1,13 +1,13 @@
-<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core">
+<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core" xmlns:f="sap.ui.layout.form">
 	<Dialog id="idAddStatusDialog" title="{i18n>AddStatusDialogTitle}">
 		<content>
-			<sap.ui.layout.form:SimpleForm xmlns:sap.ui.layout.form="sap.ui.layout.form" editable="true" layout="ResponsiveGridLayout"
+			<f:SimpleForm editable="true" layout="ResponsiveGridLayout"
 				id="idAddStatusDialog__form0">
-				<sap.ui.layout.form:content>
+				<f:content>
 					<Label text="{i18n>status}" id="idAddStatusDialog__label1"/>
 					<Input width="100%" id="idAddStatusDialog__input2" required="true" value="{addStatusDialog>/name}" />
-				</sap.ui.layout.form:content>
-			</sap.ui.layout.form:SimpleForm>
+				</f:content>
+			</f:SimpleForm>
 		</content>
 		<beginButton>
 			<Button text="{i18n>create}" width="100px" id="idAddStatusDialog__button0" press="onAddStatusDialogCreate"/>

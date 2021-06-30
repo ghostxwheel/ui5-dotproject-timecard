@@ -61,7 +61,8 @@ sap.ui.define([
 
     createSettingsReadOnlyModel: function(oSettingsModel) {
       var oModel = new JSONModel({
-        commonTaskStatuses: []
+        commonTaskStatuses: [],
+        timePickerType: (Device.system.phone ? "Number" : "Text")
       });
 
       return oModel;
