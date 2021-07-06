@@ -30,6 +30,6 @@
     "serve-index": "^1.9.1"
   },
   "devDependencies": {
-    "xo": "^0.40.3"
+    "xo": "^0.41.0"
   }
 }
